@@ -1,31 +1,42 @@
 from django.db import models
+from django.contrib import admin
 from django.contrib.auth.models import User
 
-#Assuming Menu models exists like this:
-#class Menu(models.Model):
-#    name = models.CharField(max_lenght=100)
-#    price = models.DecimalField(max_digits=10, decimal_place=2
+#Menu Model
+class Menu(models.Model):
+    name = models.CharField(max_lenght=100)
+    description = models.TextField()
+    price = models.DecimalField(max_digits=, decimal_place=2)
+
+    def __str__(self):
+        return self.name
+
+#Order Model
 class Order(models.Model):
     STATUS_CHOSICS = [
         ('PENDING', 'Pending'),
-        ('PROCESSING','Processing'),
         ('COMPELETED','Compeleted'),
         ('CANCELLED','Cancelled'),
     ]
 
-    customer = models.ForeignKey(User, on_delete=models.CASCADE, related_name='orders')
-    total_amount = models.DecimalField(max_digits=10, decimal_place2, default=0.00)
-    order_status = models.CharField(max_lenght=20, choices=STATUS_CHOSICS, default='PENDING')
+    customer = models.ForeignKey(User, on_delete=models.CASCADE)
+    order_item = models.ManyToManyField(menu)
+    total_amount = models.DecimalField(max_digits=10, decimal_place2)
+    order_status = models.CharField(max_lenght=10, choices=STATUS_CHOSICS, default='PENDING')
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"Order #{self.pk} by {self.customer.username}"
+        return f"Order #{self.id} by {self.customer.username}"
+        
+#Admin registeration for Menu
+@admin.register(menu)
+class MenuAdmin(admin.ModelAdmin):
+    list_display = ['name', 'description',''price]
+    search_fields = ['name']
 
-class OrderItem(models.Model):
-    order = models.ForeignKey(Order, on_delete=models.CASCADE, related_name='items')
-    menu_item = models.ForeignKey('Menu', on_delete=models.CASCADE)
-    quantity = models.p\PositiveIntegerField(default=1)
-    price = models.DecimalField(max_digital=10, decimal_place=2) #price at the time of order
-
-    def __str__(self):
-        returnf"{self.quantity} x {self.menu_item.name} (Order #{self.order.pk})"
+#admin registeration for Order
+@admin.register(Order)
+class OrderAdmin(admin.ModelAdmin):
+    list_display = ['customer','total_amount','order_status']
+    search_fields = ['customer__username']
+    list_filter = ['order_status']
