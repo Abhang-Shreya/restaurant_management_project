@@ -1,42 +1,67 @@
-from django.db import models
-from django.contrib import admin
-from django.contrib.auth.models import User
+#menu_api.py
+ 
+import os
+import django
+from django.conf import settings
+from django.urls import path
+from django.http import Jsonresponse
+from django.core.wsgi import get_wsgi_application
+from rest_framework.view import APIView
+from rest_framework.response import Response
+from rest_framework import status
 
-#Menu Model
-class Menu(models.Model):
-    name = models.CharField(max_lenght=100)
-    description = models.TextField()
-    price = models.DecimalField(max_digits=, decimal_place=2)
+# Minimal jango setting configuration
 
-    def __str__(self):
-        return self.name
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
-#Order Model
-class Order(models.Model):
-    STATUS_CHOSICS = [
-        ('PENDING', 'Pending'),
-        ('COMPELETED','Compeleted'),
-        ('CANCELLED','Cancelled'),
-    ]
+settings.configure(
+    DEBUG=True,
+    SECRET_KEY='a-random-secret-key',
+    ROOT_URLCONF=__name__,
+    MIDDLEWARE=[],
+    ALLOWED_HOST=['*'],
+    INSTALLED_APPS=[
+        'rest_framework'
+    ],
+)
 
-    customer = models.ForeignKey(User, on_delete=models.CASCADE)
-    order_item = models.ManyToManyField(menu)
-    total_amount = models.DecimalField(max_digits=10, decimal_place2)
-    order_status = models.CharField(max_lenght=10, choices=STATUS_CHOSICS, default='PENDING')
-    created_at = models.DateTimeField(auto_now_add=True)
+django.setup()
 
-    def __str__(self):
-        return f"Order #{self.id} by {self.customer.username}"
-        
-#Admin registeration for Menu
-@admin.register(menu)
-class MenuAdmin(admin.ModelAdmin):
-    list_display = ['name', 'description',''price]
-    search_fields = ['name']
+#API View with hardcoded menu 
 
-#admin registeration for Order
-@admin.register(Order)
-class OrderAdmin(admin.ModelAdmin):
-    list_display = ['customer','total_amount','order_status']
-    search_fields = ['customer__username']
-    list_filter = ['order_status']
+class menuView(APIView):
+    def get(self, request):
+        menu = [
+            {
+                "name": "Margherita Pizaa",
+                "decription":"classic pizza with  fresh tamotoes, mozzerella, and basil. ",
+                "price" :8.99 
+            },
+            {
+                "name":"Caesar salad",
+                "decription":"Crisp romaine lettuse with Caesar dressing,croutons and parmesan",
+                "price":6.49
+            }
+            {
+                "name":"Spaghetti Bolognese",
+                "decription":"Spaghettiwith a rich ground beef and tomato sauce.",
+                "price":10.50
+            }
+        ]
+        return Response(menu, status=status.HTTP_200_OK)
+
+#URL configuration
+urlpatterns:[
+    path ('menu/', MenuView.as_view()),
+]
+
+#Run the app using Django's dev server
+
+if __name__ == "__Main__":
+    from django.core.management import execute_from_command_line
+
+    os.environ.setdefault('DJANGO_SETTING_MODULE', __name__)
+    get_wsgi_application = get_wsgi_application()
+
+
+    execute_from_command_line(['manage.py','runserver'])
