@@ -1,67 +1,22 @@
-#menu_api.py
- 
-import os
-import django
-from django.conf import settings
-from django.urls import path
-from django.http import Jsonresponse
-from django.core.wsgi import get_wsgi_application
-from rest_framework.view import APIView
-from rest_framework.response import Response
-from rest_framework import status
+from django.db import models
+from django.contrib.auth.models import User
+from django.db.models.signals import post_save
+from django.dispatch import receiver
 
-# Minimal jango setting configuration
+class UserProfile(models.Models):
+    user = models.OneToOneFields(User, on_delete=models.CASCADE)
+    name = models.CharField(max_length=100)
+    phone_number = models.CharField(max_length15, blank=True)
+    email = models.EmailField(max_length=255, blank=True)
 
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+    def__str__(self):
+        return self.user.username
 
-settings.configure(
-    DEBUG=True,
-    SECRET_KEY='a-random-secret-key',
-    ROOT_URLCONF=__name__,
-    MIDDLEWARE=[],
-    ALLOWED_HOST=['*'],
-    INSTALLED_APPS=[
-        'rest_framework'
-    ],
-)
-
-django.setup()
-
-#API View with hardcoded menu 
-
-class menuView(APIView):
-    def get(self, request):
-        menu = [
-            {
-                "name": "Margherita Pizaa",
-                "decription":"classic pizza with  fresh tamotoes, mozzerella, and basil. ",
-                "price" :8.99 
-            },
-            {
-                "name":"Caesar salad",
-                "decription":"Crisp romaine lettuse with Caesar dressing,croutons and parmesan",
-                "price":6.49
-            }
-            {
-                "name":"Spaghetti Bolognese",
-                "decription":"Spaghettiwith a rich ground beef and tomato sauce.",
-                "price":10.50
-            }
-        ]
-        return Response(menu, status=status.HTTP_200_OK)
-
-#URL configuration
-urlpatterns:[
-    path ('menu/', MenuView.as_view()),
-]
-
-#Run the app using Django's dev server
-
-if __name__ == "__Main__":
-    from django.core.management import execute_from_command_line
-
-    os.environ.setdefault('DJANGO_SETTING_MODULE', __name__)
-    get_wsgi_application = get_wsgi_application()
-
-
-    execute_from_command_line(['manage.py','runserver'])
+#Automatically create or update user profile when a user is created/updated
+@receiver(post_save, sender=User)
+def create_or_update_user_profile (sender, instance, created , **kwargs):
+    if created:
+        UserProfile.objects.create(user=instance, name =instance.username,  email=instance.email)
+    else :
+        instance.userprofile.save()
+        
