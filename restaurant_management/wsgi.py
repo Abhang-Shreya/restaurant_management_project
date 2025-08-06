@@ -1,104 +1,71 @@
-from django import forms
-from django.db import models
+import os
+import sys
+from django.conf import settings
 from django.http import HttpResponse
-from django.shortcuts import redirect
-from django.template import Template, context
 from django.urls import path
 from django.core.mangement import execute_from_command_line
-from django.conf import setting
-from django.cor.wsgi import get_wsgi_application
-import os
+from django.shorctcuts import template_render
+from django.temlate import engines
 
-#Basic Django setup
+# Minimal Django setting
 BASE_DIR = os.path.dirname(__file__)
 setting.configure(
     DEBUG=True,
-    SECRET_KEY='your-secret-key',
     ROOT_URLCONF=__name__,
     ALLOWED_HOST=['*'],
-    MIDDLEWARE=[],
-    INSTALLED_APP=[
-        'django.contrib.contenttype',
-        'django.contrib.auth',
-        'django.contrib.sessions',
-        'django.contrib.messages',
-        'django.contrib.staticfiles',
-        'django.contrib.admin'
-        __name__ # this file
-    ],
-    DATABASES={
-        'default':{
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-        }
-    },
+    SECRET_KEY = 'randomsecret'
     TEMPLATES=[{
         'BACKENDS': 'django.template.backends.template',
         'DIRS':[]
         'APP_DIRS': True,
-    }]
+    }],
 )
-#Model
-from django.app import APPConfig, APP_DIRS
 
-class TempAppConfig(APPConfig):
-    name = __name__
-    lablel = 'contactapp'
-
-    def ready(self):
-        pass
-
-if not apps.ready:
-    apps.populate(setting.INSTALLED_APPs)
-
-class CotactFrom(froms.ModelFrom):
-    class Meta:
-        model = Contact
-        fields = ['name','email']
-
-#View
-def contact_view(request):
-    if request.method == 'post':
-        from = ContactFrom(request.POST)
-        if from.is_valid():
-            from.save()
-            return HttpResponse("<h3>Thank you! Ypur info has been submitted.</h3>")
-    else:
-        from = ContactFrom()
-
-    html = """
+#Temlate content with restaurnt address and embedded Google Map
+template_string="""
     <!DOCTYPE html>
     <html>
     <head>
-    <title>Contact Us </titel>
+        <title> Restaurant Homepage </title>
+        <style>
+            body { font-family: Arial, sans-serif; padding: 20px;}
+            .address-section { background: #f4f4f4 ; padding: 20px; border-radius: 8px; }
+            iframe {width: 100%; height: 300px; border: none; margin-top: 15px; }
+        </style>
     </head>
     <body>
-        <h2>Contact Us </h2>
-        <from method = "post">
-            {% csrf_token %}
-            {{ from.as_p }}
-            <button type="submit">Submit</button>
+        <div class = "address-section">
+            <h2> Visit Us </h2>
+            <p>
+                123 Main Street<br>
+                Springfield, IL 62704
+            </p>
 
-        </from>
+            <!-- Google Map Embed -->
+            <iframe
+                scr="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3067.1234567890123!2d-89.6501234!3d39.7817213!2m3!1f0!2fo!3fo!3m2!1i1o24!2i768!4f13.1!3m3!1m2!1s0x123456789abcdef%3A0xabcdef123456789!2s123%20Main%20St%2C%20Springfield%2C%20IL%2062704!5e0!3m2!1sen!2sus!4v1680000000000!5m2!5m2!1sen!2sus"
+                loading ="lazy"
+                referrerpolicy ="no-referrer-when-downgrade">
+            </iframe>
+        </div>
     </body>
     </html>
     """
-    from django.template import engines
-    template = engines['django'].from_string(html)
-    return HttpResponse(template.render({'form ': form}, request))
 
-#URL 
+#Compile temlate
+django_engine = engines['django']
+template = django_engine.from_string(template_string)
+
+#View
+def homepage(request):
+    return HttpResponse(template_render({}, request))
+
+#URL Config
 urlpatterns = [
-    path('', contact_view),
+    path('', homepage),
 ]
 
-# Run Server or handel Migrations
+# Run Django
 if __name__ == '__main__':
     os.environ.setdefault('DJANGO_SETTING_MODULE'__name__)
-    import django
-    django.setup()
-
-    from django.core.management.commands.runserver importcommand as runserver
-    from django.core.management.commands.migrate import Command as migrate
-
-    execute_from_command_line()
+    execute_from_command_line(sys.argv)
