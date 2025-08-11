@@ -1,29 +1,54 @@
+# restaurant_app.py
+
+from django.conf import settings
+from django.db import models
+from django.shortcuts import render
+from django.urls import path
 from django.http import HttpRespnse
+from django.core.management import execute_from_command_line
+import sys, os
 
+# Minimal Django Settings
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+setting.configure(
+    DEBUG=True
+    SECRET_KEY='secret'
+    ROOT_URLCONF=__name__,
+    ALLOWED_HOST=['*']
+    INSTALLED_APPS=[
+        'django.contrib.contenttype',
+        'django.contrib.auth',
+        __name__, # register this file as an app
+    ],
+    DATABASES={'default': {
+        'ENGINE': 'django.db.backends.squlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3')
+    }}
+    TEMPLATES=[{
+        'BACKEND': 'django.template.beckend.django.DjangoTemplates',
+        "DIRS": []
+    }],
+)
+
+# Model
+class Restaurant(models.Model):
+    name = models.CharField(max_length=100)
+
+    def__str__(self):
+        return self.name
+
+# View
 def homepage(request):
-html = """
-    <html>
-    <head>
-    <title>
-        Restaurant Homepage
-    </title>
-    </head>
-    <body style = "margin:0; font-family:Arial, sans-serif; background- color:#fafafa; color:#333;">
-        
-        <div style="background-color:#ff6347; padding:20px; text-align:center; color:whitw;">
-            <h1 style="margin::0; font-size:2.5em;">Welcome to Our Restaurant</h1>
-            <ul style="list-style:none; padding: 0;">
-                <li style="padding:10px 0; border-bottom:1px solid #ddd;">🍕 Marghrita Pizza - Fresh tomatoes, mozzarella, basil</li>
-                <li style="padding:10px 0; border-bottom:1px solid #ddd;">🍝 Spaghetti carbonara -creamy sauce, crisy bacon</li>
-                <li style="padding:10px 0;">🍰 Tiramisu - Coffee-soaked ladyfingers, mascarpone cream</li>
-            </ul>
-        </div>
+    restaurant = Restaurant.objects.first()
+    if not restaurant:
+        restaurant = Restaurant.objects.create(name="My Awesome Restaurant")
+    return HttpRespnse(f"<h1>Welcome to {restaurnt.name}</h2>)
 
-        <footer style="background-color:#333; color:white; text-align: center; padding:15px; position:fixed; bottom:0 ; width: 100%;">
-            &copy; 2025 Our Restaurant. All Right Reserved.
-        </footer>
+#URL Patterns
+urlpatterns = [
+    path('', hamepage),
+]
 
-</body>
-</html>
-"""
-return HttpRespnse(html)
+# Run Commands
+if__name__ == "__main__":
+    execute_from_command_line(sys.argv)
