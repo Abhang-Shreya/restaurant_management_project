@@ -1,54 +1,58 @@
-# restaurant_app.py
-
-from django.conf import settings
-from django.db import models
-from django.shortcuts import render
-from django.urls import path
+#view.py 
 from django.http import HttpRespnse
-from django.core.management import execute_from_command_line
-import sys, os
+from django.urls import path
+from django.conf import settings
+from django.conf.urls.statics import static
 
-# Minimal Django Settings
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
-setting.configure(
-    DEBUG=True
-    SECRET_KEY='secret'
-    ROOT_URLCONF=__name__,
-    ALLOWED_HOST=['*']
-    INSTALLED_APPS=[
-        'django.contrib.contenttype',
-        'django.contrib.auth',
-        __name__, # register this file as an app
-    ],
-    DATABASES={'default': {
-        'ENGINE': 'django.db.backends.squlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3')
-    }}
-    TEMPLATES=[{
-        'BACKEND': 'django.template.beckend.django.DjangoTemplates',
-        "DIRS": []
-    }],
-)
+# Simple in-file HTML templates
+HOME_HTML = """
+<!DOCTYPE html>
+<html>
+<head>
+    </title>Restauramt Homepage</title>
+</head>
+<body style="font-family: Arial; text-align: center;">
+    <h1>Welcome to Our Restaurant</h1>
+    <nav>
+        <a href="/">Home</a>
+        <a href="/about/">About Us</a>
+    </nav>
+    <p>Delicious food, great ambiance, and friendly service.</p>
+</body>
+</html>
+"""
 
-# Model
-class Restaurant(models.Model):
-    name = models.CharField(max_length=100)
-
-    def__str__(self):
-        return self.name
-
+ABOUT_HTML = """
+<!DOCTYPE html>
+<html>
+<head>
+    <title>About our Restaurant</title>
+</head>
+<body style = "font-family: Arial; text-align: center;">
+    <h1>About Us</h1>
+    <nav>
+     <a href="/">Home</a>
+     <a href="/about/">About Us</a>
+    </nav>
+    <p>We are a family-owned restaurnt serving fresh and authentic dishes since 1999.
+        Our chefs use the finest ingredients to create meals you'll never forget.</p>
+    <img src="/static/restaurant.jpg" alt="Our Restaurant" style="max-width:400px; margin-top: 20px;">
+</body>
+</html>
+"""
 # View
-def homepage(request):
-    restaurant = Restaurant.objects.first()
-    if not restaurant:
-        restaurant = Restaurant.objects.create(name="My Awesome Restaurant")
-    return HttpRespnse(f"<h1>Welcome to {restaurnt.name}</h2>)
+def home_view(request):
+    return HttpRespnse(HOME_HTML)
+
+def about_view(request):
+    return HttpRespnse(ABOUT_HTML)
 
 #URL Patterns
 urlpatterns = [
-    path('', hamepage),
+    path('', home_view, name='home'),
+    path('about/',about_view,name='about'),
 ]
 
-# Run Commands
-if__name__ == "__main__":
-    execute_from_command_line(sys.argv)
+#Static files serving (for development)
+if settings.DEBUG:
+    urlpatterns += static(settings.STATIC_URL , document_root=setting.STATIC_ROOT)
