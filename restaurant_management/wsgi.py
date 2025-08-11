@@ -1,52 +1,29 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, inital-scale=1.0">
+from django.http import HttpRespnse
+
+def homepage(request):
+html = """
+    <html>
+    <head>
     <title>
-        404 - Page not Found
+        Restaurant Homepage
     </title>
-    <style>
-        body {
-            background-colors: #f8f9fa;
-            font-family: Arial, sans-serif;
-            text-alige: center;
-            padding: 50px;
-            color: #333;
-        }
-        h1 {
-            font-size: 6rim;
-            color: #ff4d4d;
-            margin-bottom: 10px;
-        }
-        h2 {
-            font-size: 2rem;
-            margin-bottom: 20px;
-        }
-        p {
-            font-size: 1.2rem;
-            color: #555;
-            margin-bottom: 20px;
-        }
-        a {
-            display: inline-block;
-            text-decoration: none;
-            color: white;
-            background-color: #007bff;
-            padding: 10px 20px;
-            border-radius: 5px;
-            font-size: 1rem;
-            transition: background-color 0.3s ease;
-        }
-        a:hover {
-            background-color: #0056b3;
-        }
-    </style>
-</head>
-<body>
-    <h1>404</h1>
-    <h2>Oops! Page Not Found </h2>
-    <p>The page you are looking for doesn't exist or has been moved.</p>
-    <a href="/">Go Back Home</a>
+    </head>
+    <body style = "margin:0; font-family:Arial, sans-serif; background- color:#fafafa; color:#333;">
+        
+        <div style="background-color:#ff6347; padding:20px; text-align:center; color:whitw;">
+            <h1 style="margin::0; font-size:2.5em;">Welcome to Our Restaurant</h1>
+            <ul style="list-style:none; padding: 0;">
+                <li style="padding:10px 0; border-bottom:1px solid #ddd;">🍕 Marghrita Pizza - Fresh tomatoes, mozzarella, basil</li>
+                <li style="padding:10px 0; border-bottom:1px solid #ddd;">🍝 Spaghetti carbonara -creamy sauce, crisy bacon</li>
+                <li style="padding:10px 0;">🍰 Tiramisu - Coffee-soaked ladyfingers, mascarpone cream</li>
+            </ul>
+        </div>
+
+        <footer style="background-color:#333; color:white; text-align: center; padding:15px; position:fixed; bottom:0 ; width: 100%;">
+            &copy; 2025 Our Restaurant. All Right Reserved.
+        </footer>
+
 </body>
 </html>
+"""
+return HttpRespnse(html)
