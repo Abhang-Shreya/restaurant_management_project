@@ -12,9 +12,38 @@ def home(request):
     <head>
         <meta charset="UTF-8">
         <title>{restaurant_name}</title>
+        <style>
+            body {{
+                font-family: Arial, Helvetica,sans-serif;
+                background-color: #faf3e0;
+                margin: 0;
+                padding: 0;
+                color: #333;
+            }}
+            header{{
+                background-color: #c0392b;
+                color: white;
+                padding: 20px;
+                text-align: center;
+            }}
+            h1 {{
+                margin: 0;
+                font-size: 2.5rem;
+            }}
+            main {{
+                padding: 20px;
+                text-align: center;
+            }}
+            p{{
+                font-size: 1.1rem;
+                margin-top: 10px;
+            }}
+        </style>
     </head>
     <body>
-        <h1>{restaurant_name}</h1>
+        <header>
+            <h1>{restaurant_name}</h1>
+        </header>
         <p>Welcome to {restaurant_name}! We're glad to have you here.</p>
     </body>
     </html>
