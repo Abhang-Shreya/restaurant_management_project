@@ -1,63 +1,42 @@
+# view.py 
+
+from django.conf import settings
+from django.shortcuts import render
+from django.db import models
+
+#Model
+class RestaurantInfo(models.Model):
+    name = models.CharField(max_lenght=100)
+    phone = models.CharField(max_lenght=15)
+
+    def __str__(self):
+        return self.name
+    
+#View
+def home(request):
+    #Try geeting phone from settings
+    phone_number = getattr(settings, "RESTAURANT_PHONE", nONE)
+
+    # If not in setting, try database
+    if not phone_number:
+        restaurnt_info = RestaurantInfo.objects.first()
+        phone_number= restaurnt_info.phone if restaurnt_info else "Not available"
+
+    return render(request, "home.html", {"phone_number": phone_number})
+
+#setting.py
+#Add in your setting file (this is just for refernce)
+#RESTAURANT_PHONE ="+91 98765 43210"
+
+# Template(home.html)
+"""
 <!DOCTYPE html>
-<html="en">
+<html>
 <head>
-    <meta charest="UTF-8">
-    <meta name="viewport" contact="width=dievice-width, intial-scale=1.0">
-    <title>
-        Reservations
-    </title>
-    <style>
-        body{
-            font-family: Arial, sans-serif;
-            background-color: #f9f9f9;
-            color: #333;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            flex-driection: coloum;
-            min-hight: 100vh;
-            }
-
-            header {
-                background-color: #444;
-                color: #fff;
-                padding: 15px;
-                text-align: center;
-            }
-
-            main {
-                flex: 1;
-                display: flex;
-                algin-item: center;
-                justify-content: center;
-            }
-
-            .placeholder {
-                font-size: 1.5rem;
-                text-align: center;
-                padding:20px;
-                background-color: #fff;
-                border-radius: 8px;
-                box-shadow: 0px 2px 8px rgba(0,0,0,0.1);
-            }
-
-            footer {
-                background-color: #444;
-                color: #fff;
-                padding: 10px;
-                text-align: center;
-            }
-    </style>
+    <title>Restaurant Hompage</title>
 </head>
 <body>
-    <header>
-        <h1>Reservations</h1>
-    </header>
-    <main>
-        <div class="placeholder">
-            Our online reservation system will be available soon<br>
-            Please check back later!
-        </div>
-    </main>    
+    <h1>Welcome to Our Resturant</h1>
+    </p>Phone: {{ phone_number }}</p>
 </body>
 </html>
