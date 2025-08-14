@@ -6,6 +6,8 @@ from django.conf.urls.static import static
 
 def home(request):
     restaurant_name = "The Gourmet spot"
+    logo_url = "/static/images/logo.png" #Put your Logo file here:static/images?logo.png
+    
     html = f"""
     <!DOCTYPE html>
     <html lang="en">
