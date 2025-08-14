@@ -1,42 +1,68 @@
 # view.py 
-
+from django.http import HttpRespone
+from django.utils import timezone
 from django.conf import settings
-from django.shortcuts import render
-from django.db import models
+from django.urls import path
+from django.core.wsgi import get_wsgi_application
 
-#Model
-class RestaurantInfo(models.Model):
-    name = models.CharField(max_lenght=100)
-    phone = models.CharField(max_lenght=15)
+setting.configure(
+    DEBUG=True,
+    ROOT_URLCONF=__name__,
+    SECRET_KEY='abc123',
+    ALLOWED_HOSTS=['*'],
+    TEMPLATE=[{
+        'BACKED': 'django.template.backends.django.DjangoTemplate',
+        'DIRS':[],
+        'APP_DIRS': True,
+    }]
+)
 
-    def __str__(self):
-        return self.name
-    
-#View
-def home(request):
-    #Try geeting phone from settings
-    phone_number = getattr(settings, "RESTAURANT_PHONE", nONE)
+from django.template import engines
+django_engine = engine['django']
 
-    # If not in setting, try database
-    if not phone_number:
-        restaurnt_info = RestaurantInfo.objects.first()
-        phone_number= restaurnt_info.phone if restaurnt_info else "Not available"
-
-    return render(request, "home.html", {"phone_number": phone_number})
-
-#setting.py
-#Add in your setting file (this is just for refernce)
-#RESTAURANT_PHONE ="+91 98765 43210"
-
-# Template(home.html)
-"""
+#Base HTML with footer
+base_html="""
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Restaurant Hompage</title>
+    <title>{{  title }}</title>
 </head>
-<body>
-    <h1>Welcome to Our Resturant</h1>
-    </p>Phone: {{ phone_number }}</p>
+<body style="font-family:Arial, sans-serif; margin:0; padding:0;">
+    </div style="min-hegiht:90vh; padding:20px">
+        {% block contet %}{% endblock %}
+    </div>
+    <footer style="text-align:center; padding::10px; background:#f2f2f2;">
+        &copy; {{ year }} Your Restaurant Name. All right reserved.
+    </footer>
 </body>
 </html>
+"""
+
+#Home page template extending base
+home_html = """
+{% extends base %}
+{% block content %}
+<h1>Welcome to Our Restaurant</h1>
+<p>Enjoy our delicious menu!</p>
+{% endblock %}
+"""
+
+def home(request):
+   template = django_engine.from_string(home_html)
+   base_template = django_engine.from_string(base_html)
+   context = {
+    'tilte':'Home'
+    'year': timezone.now(.)year,
+    'base': base_template
+   }
+   return HttpRespone(template.render(context,request))
+
+urlpatterns = [
+    path('',home),
+]
+
+application = get_wsgi_application()
+
+if__name__=="main":
+    from django.core.managenment import execute_from_command_line
+    execute_from_command_line()
