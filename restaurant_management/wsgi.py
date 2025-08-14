@@ -1,18 +1,65 @@
-#view.py 
-from django.http import HttpRespnse
-from django.urls import path
+<!DOCTYPE html>
+<html>
+<head>
+    <title>
+        My Restaurant
+    </title>
+    <style>
+        body{
+            font-family: Arial, sans-serif;
+            background-color: #fafafa;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
 
-#View
-def menu_list(request):
-    menu_items = [
-        {"id":1, "name": "Margherita Pizza", "price": 299},
-        {"id":2, "name": "Veggie Burger", "price":199},
-        {"id":3, "name": "Pasta Alfredo", "price": 249},
-    ]
-    return JsonResponse(menu_items, safe=False)
+        header {
+            background-color:#ff7043;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
 
-#URL Config
+        h1 {
+            margin: 0;
+            font-size: 2.5em;
+        }
 
-urlpatterns =[
-    path('api/menu/', menu_list, name='menu-list'),
-]
+        main {
+            max-width: 800px;
+            margin:40px auto;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+        }
+
+        p{
+            line-height: 1.6;
+            font-size: 1.1em;
+        }
+
+        footer {
+            text-align: center;
+            padding:15px;
+            background-color: #eee;
+            font-size: 0.9em;
+            margin-top: 40px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Welcome to My Restaurant</h1>
+    </header>
+
+    <main>
+        <p>Enjoy delicious meals made with fresh ingredients, served with love and care.</P>
+        <p>Our menu features a variety of dishes to suit every taste.</p>
+    </main>
+
+    <footer>
+        &copy; 2025 My Restaurant. All rights reserved
+.    </footer>
+</body>
+</html>
