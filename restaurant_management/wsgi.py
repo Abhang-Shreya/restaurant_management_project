@@ -1,65 +1,69 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>
-        My Restaurant
-    </title>
-    <style>
-        body{
-            font-family: Arial, sans-serif;
-            background-color: #fafafa;
-            margin: 0;
-            padding: 0;
-            color: #333;
-        }
+# contact_page.py
 
-        header {
-            background-color:#ff7043;
-            color: white;
-            padding: 20px;
-            text-align: center;
-        }
+from django.http import HttpRespone
+from django.urls import path
 
-        h1 {
-            margin: 0;
-            font-size: 2.5em;
-        }
+def contact_us(request): 
+    html_content = """   
+    <!DOCTYPE html>
+    <html="en">
+    <head>
+        <meta charest="UTF-8">
+        <title>
+            Contact Us
+        </title>
+        <style>
+            body{
+                font-family: Arial, sans-serif;
+                background-color: #f9f9f9;
+                margin: 0;
+                padding: 0;
+            }
 
-        main {
-            max-width: 800px;
-            margin:40px auto;
-            padding: 20px;
-            background: white;
-            border-radius: 8px;
-            box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-        }
+            .container {
+                max-width: 600px;
+                margin: 50px auto;
+                background-color: white
+                padding: 20px;
+                border-radius: 8px;
+                box-shadow: 0 0 10px rgba(0,0,0,0.1);
+                text-align: center;
+            }
 
-        p{
-            line-height: 1.6;
-            font-size: 1.1em;
-        }
+            h1 {
+                margin-top: center;
+                color: #333; 
+            }
 
-        footer {
-            text-align: center;
-            padding:15px;
-            background-color: #eee;
-            font-size: 0.9em;
-            margin-top: 40px;
-        }
-    </style>
-</head>
-<body>
-    <header>
-        <h1>Welcome to My Restaurant</h1>
-    </header>
+            .info {
+                margin-top: 20px;
+            }
 
-    <main>
-        <p>Enjoy delicious meals made with fresh ingredients, served with love and care.</P>
-        <p>Our menu features a variety of dishes to suit every taste.</p>
-    </main>
+            .info p {
+                margin: 8px 0;
+                font-size: 16px;
+                color: #555;
+            }
 
-    <footer>
-        &copy; 2025 My Restaurant. All rights reserved
-.    </footer>
-</body>
-</html>
+            .info strong{
+                color: #000;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="container">
+            <h1>Contact Us</h1>
+            <div class="info">
+                <p><strong>Address:</strong>123 Food street, pune, India<p>
+                <p><strong>Phone:</strong> +91 98765 43210</p>
+                <p><strong>Email:</strong>contact@myrestaurant.com</p>
+            </div>
+        </div>
+    </body>
+    </html>
+    """
+    return HttpRespone(html_content)
+
+urlpatterns = [
+    path('contact/', contact_us)
+]
