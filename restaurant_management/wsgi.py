@@ -76,7 +76,7 @@ from django.conf import setting
 setting.configure(
     DEBUG=True,
     SECRET_KEY="secret",
-    ROOT_URLCONF=__name__,
+    ROOT_URLCONF=__name__,  
     ALLOWED_HOST=["*"],
     INSTALLED_APPS=[
         "django.contrib.contenttypes",
