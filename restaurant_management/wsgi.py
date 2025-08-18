@@ -1,8 +1,14 @@
+from django.http import HttpResponse
+from django.urls import path
+from django.core.management import execute_from_command_line
+import sys
+def home (request):
+    html = """
 <!DOCTYPE html>
 <html = "en">
 <head>
     <meta charset="UTF-8">
-    <title>c=My Restaurant</title>
+    <title>c=My Restaurant - search Menu</title>
     <style>
         body{
             font-family: Arial, sans-serif;
