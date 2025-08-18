@@ -1,57 +1,68 @@
-# view.py 
-from django.http import HttpRespone
-from django.urls import path 
-from django.conf import settings
-from django.conf.urls.static import static
+# app.py
+from django.db import models
+from django.shortcuts import render
+from django.http import HttpResponse
+from django.urls import path
+from django.core.management import execute_from_command_line
+import sys
 
+#Models
+class Restaurant(models.Model):
+    name = models.CharField(max_length=100)
+    address = models.TextField()
+
+    def__str__(self):
+        return self.name
+
+#Views 
 def home(request):
-    restaurant_name = "The Gourmet spot"
-    logo_url = "/static/images/logo.png" #Put your Logo file here:static/images?logo.png
-    
-    html = f"""
-    <!DOCTYPE html>
-    <html lang="en">
-    <head>
-        <meta charset="UTF-8">
-        <title>{restaurant_name}</title>
-        <style>
-            body {{
-                font-family: Arial, Helvetica,sans-serif;
-                background-color: #faf3e0;
-                margin: 0;
-                padding: 0;
-                color: #333;
-            }}
-            header{{
-                background-color: #c0392b;
-                color: white;
-                padding: 20px;
-                text-align: center;
-            }}
-            h1 {{
-                margin: 0;
-                font-size: 2.5rem;
-            }}
-            main {{
-                padding: 20px;
-                text-align: center;
-            }}
-            p{{
-                font-size: 1.1rem;
-                margin-top: 10px;
-            }}
-        </style>
-    </head>
-    <body>
-        <header>
-            <h1>{restaurant_name}</h1>
-        </header>
-        <p>Welcome to {restaurant_name}! We're glad to have you here.</p>
-    </body>
-    </html>
-    """
-    return HttpRespone(html)
+    restaurant = Restaurant.objects.first()
+    if restaurant:
+        html = f"""
+        <html>
+        <head>
+            <title>{restaurant.name}</title>
+        </head>
+        <body>
+            <h1>Welcome to{restaurant.name}</h1>
+            <p><strong>Address:</strong>{restaurant.address</p>
+        </body>
+        </html>
+        """
+    else:
+        html = """
+        <html>
+        <head>
+            <title>No Restaurant Found</title>
+        </head>
+        <body>
+            <h1>Welcome</h1>
+            <p>No reataurant detials available yet.</p>
+        </body>
+        </html>
+        """
+    return HttpResponse(html)
 
-urlpatterns = [
-    path('',home),
-] + static(settings.SATATIC_URL, document_root=settings.SATATIC_ROOT)
+#URLS
+urlspatterns = [
+    path("", home)
+]
+
+#Django Config
+from django.conf import settings
+settings.configure(
+    DEBUG=True,
+    SECRET_KEY ="secret",
+    ROOT_URLCONF=__name__,
+    ALLOWED_HOST["*"],
+    INSTALLED_APP=[
+        "django.contrib.contenttypes",
+        "django.contrib.auth",
+        __name__,
+    ],
+    DATABASES={"default":{"ENGINE":"django.db.backend.sqlite3","NAME":"db.sqlite3"}},
+)
+
+#Main
+if__name__ == "__main__":
+    execute_from_command_line(sys.argv)
