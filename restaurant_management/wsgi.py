@@ -6,29 +6,32 @@ from django.core.management import execute_from_command_line
 import sys
 
 class RestaurantLocation(models.Model):
+    name = models.CharField(max_length=100)
     address = models.CharField(max_length=255)
     city = models.CharField(max_length=100)
     status = models.CharField(max_length=100)
     zip_code = models.CharField(max_length=20)
+    opening_hours = models.JSONField(default=dict) # store as dictionary
 
     def__str__(self):
-        return f"{self.address},{self.city},{self.state}{self.zip_code}"
+        return self.name
 
 def home (request):
     try:
-        location = RestaurantLocation.objects.first()
+        restaurant = Restaurant.objects.first()
         if location:
-            html = f"""
-            <h1>Restaurant Location</h1>
-            <p><strong>Address: </strong>{location.address}</p>
-            <p><strong>City: </strong>{location.city}</p>
-            <p><strong>Status: </strong>{location.state}</p>
-            <p><strong>Zip Code: </strong>{location.zip_code}</p>
-            """
-        else:
-            html ="
-            </h1>No location details found. please add in the database </h1>
-            "
+            hours_html = "".join(
+                f"<p><strong>{day}: </strong>{time}</p>"
+                for day, time in restaurant.opening_hour.items()
+            )
+            html ="""
+            </h1>Welcome to {restaurnt.name}</h1>
+            <h2>Location</h2>
+            {hours_html}
+            """"
+
+        else: 
+            html = "<h1>No restaurant details found. Please add one in the database</h1>"
 
     excepet Excepetion as e :
         html f"""
@@ -46,7 +49,7 @@ urlpatterns = [
 # Django Config
 from django.conf import setting 
 setting.configure(
-    DEBUG+True,
+    DEBUG=True,
     SECRET_KEY="secret",
     ROOT_URLCONF=__name__,
     ALLOWED_HOST=["*"],
