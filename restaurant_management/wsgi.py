@@ -2,11 +2,11 @@
 <html = "en">
 <head>
     <meta charset="UTF-8">
-    <title>c=Contact us</title>
+    <title>c=Contact Form</title>
     <style>
         body{
             font-family: Arial, sans-serif;
-            margin: 30px;
+            margin: 40px;
         }
         form{
             max-width:400px;
@@ -26,7 +26,7 @@
             margin-top: 15px;
             padding:10px 15px;
             bacground-color: #4CAF50;
-            color: white;
+            color: #fff;
             border: none;
             border-radius: 5px;
             cursor: pointer;
@@ -37,6 +37,7 @@
         .error{
             color: red;
             font-size: 14px;
+            margin-top: 5px;
         }
     </style>
 </head>
