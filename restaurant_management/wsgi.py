@@ -7,7 +7,7 @@
         body{
             font-family: Arial, sans-serif;
             margin: 20px;
-        }
+        } 
         header{
             
             max-width:400px;
