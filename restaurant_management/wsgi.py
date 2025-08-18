@@ -2,13 +2,14 @@
 <html = "en">
 <head>
     <meta charset="UTF-8">
-    <title>c=Contact Form</title>
+    <title>c=My Restaurant</title>
     <style>
         body{
             font-family: Arial, sans-serif;
-            margin: 40px;
+            margin: 20px;
         }
-        form{
+        header{
+            
             max-width:400px;
         }
         label {
