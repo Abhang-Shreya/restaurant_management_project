@@ -13,30 +13,55 @@ class RestaurantLocation(models.Model):
     zip_code = models.CharField(max_length=20)
     opening_hours = models.JSONField(default=dict) # store as dictionary
 
-    def__str__(self):
+    def __str__(self):
+        return self.name
+
+class MenuItem(models.Model):
+    name = models.CharField(max_length=100)
+    price = models.DecimalField(max_digits=6, decimal_places=2)
+
+    def __str__(self):
         return self.name
 
 def home (request):
-    try:
-        restaurant = Restaurant.objects.first()
-        if location:
-            hours_html = "".join(
-                f"<p><strong>{day}: </strong>{time}</p>"
-                for day, time in restaurant.opening_hour.items()
-            )
-            html ="""
+    query = request.GET.get("q","") #search query
+    menu_items = MenuItem.object.all()
+
+    if query:
+        menu_items = menu_item.filter(name_icontains=query)
+
+    restaurant = Restaurant.objects.first()
+
+    if location:
+        hours_html = "".join(
+            f"<p><strong>{day}: </strong>{time}</p>"
+            for day, time in restaurant.opening_hour.items()
+        )
+        restaurant_html =f"""
             </h1>Welcome to {restaurnt.name}</h1>
             <h2>Location</h2>
+            <p>{restaurant.address},{reataurant.city},{restaurant.state} {restaurant.zip_code}</p>
+
+            <h2>Opening Hour </h2>
             {hours_html}
             """"
 
         else: 
-            html = "<h1>No restaurant details found. Please add one in the database</h1>"
+            restaurant_html = "<h1>No restaurant details found.</h1>"
 
-    excepet Excepetion as e :
-        html f"""
-        <h1> Error</h1>
-        <p>{str(e)}</p>
+        menu_html = "".join(f"<li>{item.name} - ${item.price}</li>" for item in menu_items)
+
+        html= f"""
+        {restaurant_html}
+
+        <h2>Search Menu</h2>
+        <from method="get">
+            <input type="text" name="q" value="{query}" placeholder = "Search menu item...">
+            <button type="submit">Search</button>
+        </form>
+
+        <h2>Menu</h2>
+        <ul>{menu_html if menu_html else "<li>No items found.</li>"}</ul>
         """
 
     return HttpResponse(html)
