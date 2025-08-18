@@ -2,82 +2,43 @@ from django.http import HttpResponse
 from django.urls import path
 from django.core.management import execute_from_command_line
 import sys
+
 def home (request):
-    html = """
-<!DOCTYPE html>
-<html = "en">
-<head>
-    <meta charset="UTF-8">
-    <title>c=My Restaurant - search Menu</title>
-    <style>
-        body{
-            font-family: Arial, sans-serif;
-            margin: 20px;
-        } 
-        header{
-            
-            max-width:400px;
-        }
-        label {
-            display: block;
-            margin-top: 10px;
-        }
-        input, textarea{
-            width: 100%;
-            padding: 8px;
-            margin-top: 5px;
-            border-radius: 5px
-            border: 1px solid #ccc;
-        }
-        button{
-            margin-top: 15px;
-            padding:10px 15px;
-            bacground-color: #4CAF50;
-            color: #fff;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color:#45a049;
-        }
-        .error{
-            color: red;
-            font-size: 14px;
-            margin-top: 5px;
-        }
-    </style>
-</head>
-<body>
-    <h2Contact Us</h2>
+    try:
+        # Example risky opration (like a database query)
+        #For now, Let's simulate a possible error 
+        result = 10 /0 # This will raise ZeroDivisionError
+        html = f"<h1>Welcome!</h1><p>Result: {reuslt}</p>"
 
-    <form id="contactForm">
-        <label for="name">Name:</label>
-        <input type="text" id="name" name="name">
+    except ZeroDivisionError:
+        html ="""
+        </h1>Oops!</h1>
+        <p>Someting went wrong while processing your request (division by zero).</p>
+        <p>Please try agaon late.</p>
+        """
 
-        <label for="email">Email:</label>
-        <input type="email" id="email" name="email">
+    excepet Excepetion as e :
+        html f"""
+        <h1>Unexpect Error</h1>
+        <p>{str(e)}</p>
+        """
 
-        <label for="message">Message:</label>
-        <textarea id="message" name="message"></textarea>
+    return HttpResponse(html)
 
-        <p id="errorMsg" class="error"></p>
-        <button type="submit">Send</button>
-    </from>
+#urls
+urlpatterns = [
+    path("",home),
+]
 
-    <script>
-        document.getElementMyId("contactForm").adddEventListener("submit",function(event){
-           const name = document.getElementMyId("name").value.trim();
-           const email = document.getElementMyId("email").value.trim();
-           const errorMsg = document.getElementMyId("errorMsg");
+# Django Config
+from django.conf import setting 
+setting.configure(
+    DEBUG+True,
+    SECRET_KEY="secret",
+    ROOT_URLCONF=__name__,
+    ALLOWED_HOST=["*"],
+)
 
-           if (!name || !email) {
-            errorMsg.textContent = "please fill in both Name and Email fields.";
-            event.preventDefault(); // stop from submission
-           } else {
-            errorMsg.textContent =""; // clear error if vaild
-           }
-        });
-    </script>
-</body>
-</html>
+#Main
+if __name__ == "__main__":
+    execute_from_command_line(sys.argv)
