@@ -1,73 +1,75 @@
-# app.py
-from django.db import models
-from django.shortcuts import render,redirect
-from django.http import HttpResponse
-from django import forms
-from django.urls import path
-from django.core.management import execute_from_command_line
-import sys
-
-#Models
-class Feedback(models.Model):
-    comments = models.TextField()
-
-    def__str__(self):
-        return self.name.[:30]
-
-#Forms
-class FeedbackForm(forms.ModelsForm):
-    class Meta:
-        model = Feedback
-        fields=["comments"]
-        widgets = {
-            "comments": forms.Textarea(attrs{"rows":5, "cols":40, "placeholder":"Enter your feedback here..."})
+<!DOCTYPE html>
+<html = "en">
+<head>
+    <meta charset="UTF-8">
+    <title>c=Contact us</title>
+    <style>
+        body{
+            font-family: Arial, sans-serif;
+            margin: 30px;
         }
+        form{
+            max-width:400px;
+        }
+        label {
+            display: block;
+            margin-top: 10px;
+        }
+        input, textarea{
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            border-radius: 5px
+            border: 1px solid #ccc;
+        }
+        button{
+            margin-top: 15px;
+            padding:10px 15px;
+            bacground-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color:#45a049;
+        }
+        .error{
+            color: red;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <h2Contact Us</h2>
 
-#Views 
-def home(request):
-    if request.method == "POST":
-        form = FeedbackForm(request.POST)
-        if from.is_valid():
-            form.save()
-            return HttpResponse("<h2>Thank you for your for your feedback!</h2>")
-    else:
-        form = FeedbackForm()
-    
-    return HttpResponse(f"""
-        <html>
-        <head>
-            <title>Feedback</title>
-        </head>
-        <body>
-            <h1>Leave Your Feedback </h1>
-            <form method="post">
-                {form.as_p()}
-                <button type="submit">Submit</button>
-            </from>
-        </body>
-        </html>
-        """)
+    <form id="contactForm">
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name">
 
-#URLS
-urlspatterns = [
-    path("", feedback_view),
-]
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email">
 
-#Django Config
-from django.conf import settings
-settings.configure(
-    DEBUG=True,
-    SECRET_KEY ="secret",
-    ROOT_URLCONF=__name__,
-    ALLOWED_HOST["*"],
-    INSTALLED_APP=[
-        "django.contrib.contenttypes",
-        "django.contrib.auth",
-        __name__,
-    ],
-    DATABASES={"default":{"ENGINE":"django.db.backend.sqlite3","NAME":"db.sqlite3"}},
-)
+        <label for="message">Message:</label>
+        <textarea id="message" name="message"></textarea>
 
-#Main
-if__name__ == "__main__":
-    execute_from_command_line(sys.argv)
+        <p id="errorMsg" class="error"></p>
+        <button type="submit">Send</button>
+    </from>
+
+    <script>
+        document.getElementMyId("contactForm").adddEventListener("submit",function(event){
+           const name = document.getElementMyId("name").value.trim();
+           const email = document.getElementMyId("email").value.trim();
+           const errorMsg = document.getElementMyId("errorMsg");
+
+           if (!name || !email) {
+            errorMsg.textContent = "please fill in both Name and Email fields.";
+            event.preventDefault(); // stop from submission
+           } else {
+            errorMsg.textContent =""; // clear error if vaild
+           }
+        });
+    </script>
+</body>
+</html>
