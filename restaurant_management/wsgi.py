@@ -1,99 +1,52 @@
-import os
-from django.conf import settings
-from django.conf.urls.static import static 
-from django.core.wsgi import get_wsgi_application
-from django.db import models
 from django.shortcuts import render
-from django.http import HttpResponse
 from django.urls import path
-from django.core.management import execute_from_command_line
+from django.http import HttpResponse
 
-BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+#View for About page
+def about_view(request):
+    context ={
+        "restaurant_name": "Delicious Bites",
+        "history": "Founded in 2010, Delicious Bites stareted as a small family-owned cafe and grew into a popular restaurant loved by the community",
+        "mission": "To serve fresh, high-quality meals made with love and local ingredients.",
+        "vision": "To be the go-to place for comfort food and warm hospitality.",
+    }
+    return render(request, "about.html", context)
 
-# setting
+#urls.py
+urlpatterns = [
+    path("about/", about_view, name="about"),
+]
 
-setting.configure(
-    DEBUG=True,
-    SECRET_KEY="testkey",
-    ROOT_URLCONF=__name__,  
-    ALLOWED_HOST=["*"],
-    INSTALLED_APPS=[
-        "django.contrib.contenttypes",
-        "django.contrib.auth",
-        "django.contrib.sessions",
-        "django.contrib.messages",
-        "django.contrib.staticfiles",
-        __name__, 
-    ],
-    MIDDLEWARE=[
-        'django.middleware.security.SecurityMiddleware',
-        'django.contrib.sessions.middleware.SessionMiddleware',
-        'django.middleware.common.CommonMiddleware',
-        'django.middleware.csrf.CsrfViewMiddleware',
-        'django.contrib.auth.middleware.AuthenticationMiddleware',
-        'django.contrib.messages.middleware.MessageMiddleware',
-    ]
-    DATABASES={"default":{"ENGINE":"django.db.backends.sqlite3","NAME":"db.sqlite"}},
-    TEMPLATES=[{
-        "BACKEND": "django.template..backend.django.DjangoTemplates",
-        "DIRS": [os.path.join(BASE_DIR, 'templates')],
-        "APP_DIRS": True,
-    }],
-    STATIC_URL='/static/'
-    MEDIA_URL='/media/'
-    MEDIA_ROOT=os.path.join(BASE_DIR, 'media')
-)
+#templates/about.html
+"""
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>About Us- {{ restaurant_name }}</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; background: ##fafafa; color: #333;}
+        h1 { color: #b22222; }
+        .section { margin-bottom: 20px; }
+        .card { background: white; padding: 20px; border-radius: 10px; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
+    </style>
+</head>
+<body>
+    <h1>About {{ reataurant_name }}</h1>
 
-#MODEL
-from django.app import AppConfig, apps 
+    <div class="card section">
+        <h2>Our Histroy</h2>
+        <p>{{ histroy }}</p>
+    </div>
 
-class RestaurantAppConfig(AppConfig):
-    name = '__main__'
+    <div class="card section">
+        <h2>Our Mission</h2>
+        <p>{{ mission }} </p>
+    </div>
 
-if not apps.ready:
-    app.populate(settings.INSTALLED_APPS)
-
-class Restaurant(models.Model):
-    name = models.CharField(max_length=200)
-    logo = models.ImageField(upload_to='logos/', blank =True, null=True)
-
-    def __str__(self):
-        return self.name
-
-#VIEW
-def home(request):
-    restaurnt = Restaurant.objects.first()
-    return render (request, "home.html", {"restaurant": restaurant})
-
-# URLS
-urlpatterns =[
-    path("", home, name="home"),
-] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-
-#TEMPLATES
-os.makedirs(os.path.join(BASE_DIR, 'templates'), exist_ok= True)
-with open(os.path.join(BASE_DIR,'templates' "home.html"), "w") as f:
-    f.write("""
-    <!DOCTYPE html>
-    <html>
-    <head>
-        <title>{{ restaurant.name }}</title>
-    </head>
-    <body>
-        <h1>Welcome to {{ restaurant.name }}</h1>
-        {% if restaurant.logo %}
-            <img src="{{ restaurant.logo.url }}"alt="Restaurant Logo> style="maxwidth:200px;>
-        {% else %}
-            <p>No logo available</p>
-        {% endif %}
-    </body>
-    </html>
-    """)
-
-
-#WSGI
-appliction = get_wsgi_application()
-
-if __name__ == "__main__":
-    import sys
-    execute_from_command_line(sys.argv) 
+    <div claa="card section">
+        <h2>Our Vision</h2>
+        <p>{{ vision }}</p>
+</body>
+</html>
+"""
