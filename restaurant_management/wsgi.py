@@ -1,15 +1,20 @@
+import os
+from django.conf import settings
+from django.conf.urls.static import static 
+from django.core.wsgi import get_wsgi_application
 from django.db import models
 from django.shortcuts import render
 from django.http import HttpResponse
 from django.urls import path
-from django.conf import settings
-from django.core.wsgi import get_wsgi_application
+from django.core.management import execute_from_command_line
+
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 
 # setting
 
 setting.configure(
     DEBUG=True,
-    SECRET_KEY="secretkey",
+    SECRET_KEY="testkey",
     ROOT_URLCONF=__name__,  
     ALLOWED_HOST=["*"],
     INSTALLED_APPS=[
@@ -20,52 +25,67 @@ setting.configure(
         "django.contrib.staticfiles",
         __name__, 
     ],
+    MIDDLEWARE=[
+        'django.middleware.security.SecurityMiddleware',
+        'django.contrib.sessions.middleware.SessionMiddleware',
+        'django.middleware.common.CommonMiddleware',
+        'django.middleware.csrf.CsrfViewMiddleware',
+        'django.contrib.auth.middleware.AuthenticationMiddleware',
+        'django.contrib.messages.middleware.MessageMiddleware',
+    ]
     DATABASES={"default":{"ENGINE":"django.db.backends.sqlite3","NAME":"db.sqlite"}},
     TEMPLATES=[{
         "BACKEND": "django.template..backend.django.DjangoTemplates",
-        "DIRS": []
+        "DIRS": [os.path.join(BASE_DIR, 'templates')],
         "APP_DIRS": True,
     }],
+    STATIC_URL='/static/'
+    MEDIA_URL='/media/'
+    MEDIA_ROOT=os.path.join(BASE_DIR, 'media')
 )
 
 #MODEL
+from django.app import AppConfig, apps 
+
+class RestaurantAppConfig(AppConfig):
+    name = '__main__'
+
+if not apps.ready:
+    app.populate(settings.INSTALLED_APPS)
+
 class Restaurant(models.Model):
-    name = models.CharField(max_length=100)
-    phone_number = models.CharField(max_length=15)
+    name = models.CharField(max_length=200)
+    logo = models.ImageField(upload_to='logos/', blank =True, null=True)
 
     def __str__(self):
         return self.name
 
 #VIEW
-def homepage(request):
+def home(request):
     restaurnt = Restaurant.objects.first()
-    if not restaurant:
-        # Create one if none exists
-        restaurant = Restaurant.objects.create(name="Tasty Bites", phone_number="9876543210")
-    return render (request, "homepage.html", {"restaurant": restaurant})
+    return render (request, "home.html", {"restaurant": restaurant})
 
 # URLS
 urlpatterns =[
-    path("", homepage, name="homepage"),
-]
+    path("", home, name="home"),
+] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 #TEMPLATES
-from django.template import engines
-import os 
-
-TEMPLATES_DIR = os.path.join(os.path.dirname(__file__),"templates")
-os.makedirs(TEMPLATES_DIR, exist_ok= True)
-
-with open(os.path.join(TEMPLATES_DIR, "homepage.html"), "w") as f:
+os.makedirs(os.path.join(BASE_DIR, 'templates'), exist_ok= True)
+with open(os.path.join(BASE_DIR,'templates' "home.html"), "w") as f:
     f.write("""
     <!DOCTYPE html>
     <html>
     <head>
-        <title>Restaurant Homepage</title>
+        <title>{{ restaurant.name }}</title>
     </head>
     <body>
         <h1>Welcome to {{ restaurant.name }}</h1>
-        <p> 📞Call Us: {{ restaurant.phone_number }}</p>
+        {% if restaurant.logo %}
+            <img src="{{ restaurant.logo.url }}"alt="Restaurant Logo> style="maxwidth:200px;>
+        {% else %}
+            <p>No logo available</p>
+        {% endif %}
     </body>
     </html>
     """)
@@ -76,5 +96,4 @@ appliction = get_wsgi_application()
 
 if __name__ == "__main__":
     import sys
-    from django.core.management import execute_from_command_line
     execute_from_command_line(sys.argv) 
