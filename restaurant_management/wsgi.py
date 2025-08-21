@@ -1,12 +1,11 @@
 # myapp/views.py
 from django.http import HttpResponse
-from django.urls import path, reverse
-import random
 from django.urls import path
-from . import views
+from django.shortcuts import render 
 
-#Inline template 
-template_str ="""
+#Homepage view
+def home(request):
+    return HttpResponse("""
     <!DOCTYPE html>
     <html>
     <head>
@@ -14,84 +13,58 @@ template_str ="""
         <style>
             body {
                 font-family: Arial, san-serif;
-                padding: 30px;
+                text-align: center;
+                margin-top: 100px;
+                background: #f9f9f9;
             }
-            .container {
-                max-width: 400px; margin: auto;
+            h1{
+                color: #333;
             }
-            .errorlist{
-                color: red;
-                list-style: none;
-                padding: 0;
-            }
-            .success {
-                color:green;
-            }
-            from {
-                display: flex;
-                flex-direction: column;
-            }
-            input {
-                margin: 5px 0;
-                padding: 8px;
-            }
-            button {
-                margin-top: 10px;
-                padding: 10px; 
-                background: #4CAF50;
+            .order-btn{
+                display: inline-block;
+                padding: 15px 30px;
+                font-size: 18px;
+                font-weight: bold;
                 color: white;
+                background: liner-gradient(135eg, #ff6600, #ff3300);
                 border: none;
+                border-radius: 30px;
+                text-decoration: none;
+                box-shadow: 0px 4px 6px rgba(0,0,0,0.2);
+                transition: all 0.3s ease;
             }
-            buuton:hover {
-                background: #45a049;
-                cursor: pointer;
+            .order-btn:hover {
+                background: linear-gradient(135eg, #ff3300, #cc0000);
+                transfrom: scale(1.05);
+                box-shadow: 0px 6px 10px rgba(0,0,0,0.3);
             }
         </style>
     </head>
     <body>
-        <div class="container">
             <h1>Welcome to Our Restaurant</h1>
-
-            {% if user.is_authenicated %}
-                <p class="success">Hello, {{ user.username }}! You are logged in.</p>
-                <form method="post" action="{% uel 'logout' %}">
-                    {% csrf_token %}
-                    <button type="submit">Logout</button>
-                </form>
-            {% else %}
-                <h2>Login</h2>
-                <form method="post">
-                    {% csrf_token %}
-                    {{ form.as_p }}
-                    <button type="submit">Login</button>
-                </form>
-            {% endif %}
-        </div>
+            <a href="/order/" class ="order-btn">Order Now</a>
     </body>
     </html>
-    """
+    """)
 
-    django_engine = engines['django']
-    template = django_engine.form_string(template_str)
-
-    def home(request):
-        if request.method == "POST":
-            form = AuthenicationForm(request, data=request.POST)
-            if form.is_valid():
-                user = form.get_user()
-                login(request, user)
-                return redirect("home")
-        else:
-            form = AuthenicationForm()
-    return HttpResponse(template.render({"form": form}, request))
-
-def logout_view(request):
-    if request.method == "POST":
-        logout(request)
-        return redirect("home")
+#Order placement page view 
+def order_page(request):
+    return HttpResponse("""
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title> Place Your Order</title>
+    </head>
+    <body style="font-family: Arial; text-align:center; margin-top:100px;">
+        <h2>Order Placement Page</h2>
+        <p>This is where customer will place their order.</p>
+        <a href="/" style="text-decoration:none; color:blue;">⬅️ Back to Home</a>
+    </body>
+    </html>
+    """)
 
 # URLS
 urlpatterns = [
-    path("", view.home, name="home"),
-    path("logout/", view.logout_view, name="logout"),
+    path("",home, name="home"),
+    path("order/", order_page, name="order"),
 ]
