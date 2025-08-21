@@ -1,117 +1,79 @@
-#privacy_app.py
- 
-import datetime
+# myapp/views.py
 from django.http import HttpResponse
-from django.urls import path
-from django.shortcuts import render
-from django.conf import settings
-from django.template import engines
+from django.urls import path, reverse
+from django.template import Context, Engine
 
-# Django minimal setup
-settings.configure(
+#Template  engine setup
+template_engine = Engine(
+    DIRS=[],
     DEBUG=True,
-    ROOT_URLCONF=
-    TEMPLATES=[{
-        'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS':[],
-        'OPTIONS':{
-            'loaders':[
-                ('django.template.loaders.locmem.Loader',{
-                    'home.html':"""
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Restaurant Homepage</title>
-    <style>
-        body{
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-        }
-        footer {
-            bocground: #333;
-            color: white;
-            text-align: center;
-            padding: 10px;
-            position: fixed;
-            bottom: 0;
-            width: 100%;
-        }
-        footer a {
-            color: #f1f1f1;
-            text-decoration: none;
-            margin-left: 10px;
-        }
-        footer a:hover {
-            text-decoration: underline;
-        }
-    </style>
-</head>
-<body>
-    <h1>Welcome to Our Restaurant</h1>
-    <p>Enjoy the best dinig experience with us.</p>
-
-    <footer>
-        <p>&copy; {{ year }}My Restaurant 
-            | <a herf="{% url 'privacy' %}">Privacy Policy </a>
-        </p>
-    </footer>
-</body>
-</html>
-                """,
-                'privacy.html':"""
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Privacy Policy</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif; 
-            padding: 20px;
-            line-height: 1.6;
-        }
-        h1 { color: #333; }
-    </style>
-</head>
-<body>
-    <h1>Privacy Policy</h1>
-    <p>Your privacy is important to us. This Privacy Policy outline how we handle your personal information.</p>
-    <h2>Information Collection</h2>
-    <p>We may collect personal information such as your name, email, and phone number when you interact eith our website.</p>
-    <h2>Use of Information</h2>
-    <p>We use your information only for providing and imporoving our services. We do not share your data with thrid parties.</p>
-    <h2>Cookies</h2>
-    <p>Our website may use cookies to enhace user experience.</p>
-    <h2>Contact Us</h2>
-    <p>If you have any questions about this Privacy Policy, please contact us at support@restaurant.com</p>
-</body>
-</html>
-                    """,
-                })
-            ],
-        },
-    }],
 )
 
-django_engine = engines['django']
+# shared breadcrumb templatr
+breadcrumb_template = template_engine.from_string("""
+{% if breadcrumbs %}
+<nav style="margin-bottom:15px; font-size:14px;">
+    {% for name, url_name in breadcrumbs %}
+        {% if not forloop.last %}
+            <a href="{% url url_name %}">{{ name }}</a> &raquo;
+        {% else %}
+            <span>{{ name }}</span>
+        {% endif %}
+    {% endfor %}
+</nav>
+{% endif %}
+""")
+
+#Base render function 
+def render_page(title, breadcrumbs):
+    page_template = template_engine.from_string(f"""
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <title>{title}</title>
+        <style>
+            body {{
+                font-family: Arial, sans-serif;
+                padding:20px;
+            }}
+            nav a {{
+                text-decoration: none; 
+                color: blue;
+            }}
+            nav span {{
+                font-weght: bold;
+            }}
+        </style>
+    </head>
+    <body>
+        {{% include "breadcrumb.html" %}}
+        <h1>{title}</h1>
+    </body>
+    </html>
+    """)
+    context = Context({"breadcrumbs": breadcrumbs})
+    return HttpResponse(page_template.render(context, template_engine))
 
 #views
 def home(request):
-    template = django_engine.get_template('home.html')
-    return HttpResponse(template.render({"year":datetime.date.today().year},request))
+    breadcrumb = [("Home","home")]
+    return render_page("welcome to Homepage", breadcrumbs)
 
-def privacy_policy(request):
-    template = django_engine.get_template('privacy.html')
-    return HttpResponse(template.render({}, request))
+def menu(request):
+    breadcrumbs = [("home", "home"),("menu", "menu")]
+    return render_page("Menu", breadcrumbs)
 
-#URL Patterns
-urlpatterns = [
-    path('', home, name="home"),
-    path('privacy/', privacy_policy, name="privacy"),
+def order_confirmation(request):
+    breadcrumbs = [
+        ("Home","home")
+        ("Menu","menu")
+        ("Order confirmation", "order_confirmation"),
+    ]
+    return render_page("order Confrimation", breadcrumbs)
+
+#URL patterns 
+urlpatterns =[
+    path("", home, name="home"),
+    path("menu/" menu, name="menu"),
+    path("order-confirmation/", order_confirmation, name="order_confirmation"),
 ]
-
-# Runserver
-if __name__ == "__main__":
-    import sys 
-    from django.core.management import execute_from_command_line
-    execute_from_command_line(sys.argv)
