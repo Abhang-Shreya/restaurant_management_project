@@ -1,70 +1,78 @@
 # myapp/views.py
 from django.http import HttpResponse
 from django.urls import path
-from django.shortcuts import render 
+from django.conf import settings
+from django.conf.urls.static import static
 
 #Homepage view
-def home(request):
-    return HttpResponse("""
+def homepage(request):
+    """
     <!DOCTYPE html>
     <html>
     <head>
         <title>Restaurant Homepage</tile>
         <style>
             body {
-                font-family: Arial, san-serif;
+                margin: 0;
+                font-family: Arial, sans-serif;
+                background-image: url('/staic/image/background.jpg');
+                background-siz: cover;
+                background-position: center;
+                background-repeat: no-repeat;
+                min-height: 100vh;
+                color: white;
                 text-align: center;
-                margin-top: 100px;
-                background: #f9f9f9;
+            }
+            .overlay{
+                background: rgba(0,0,0,0.6);
+                min-height: 100vh;
+                padding: 40px;
             }
             h1{
-                color: #333;
+                font-size: 3rem;
+                margin-top: 20px;
             }
-            .order-btn{
-                display: inline-block;
-                padding: 15px 30px;
-                font-size: 18px;
-                font-weight: bold;
-                color: white;
-                background: liner-gradient(135eg, #ff6600, #ff3300);
-                border: none;
-                border-radius: 30px;
-                text-decoration: none;
-                box-shadow: 0px 4px 6px rgba(0,0,0,0.2);
-                transition: all 0.3s ease;
+            p {
+                font-size: 1.2rem;
+                margin-bottom: 30px;
             }
-            .order-btn:hover {
-                background: linear-gradient(135eg, #ff3300, #cc0000);
-                transfrom: scale(1.05);
-                box-shadow: 0px 6px 10px rgba(0,0,0,0.3);
+            .food-gallery{
+                display: grid;
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+                gap: 20px;
+                max-width: 100px;
+                margin: 0 auto;
+            }
+            .food-gallery img{
+                width: 100%;
+                height: auto;
+                border-radius: 12px;
+                box-shadow: 0px 4px 10px rgba(0,0,0,0.5);
+                transition: transform 0.3s ease;
+            }
+            .food-gallery img:hover {
+                transform: scale(1.05);
             }
         </style>
     </head>
-    <body>
-            <h1>Welcome to Our Restaurant</h1>
-            <a href="/order/" class ="order-btn">Order Now</a>
+    body>
+        <div class="overlay">
+            <h1>Welcome to Our Restaurant </h1>
+            <p>Delicious food, cozy atmosphere, and warn hospitality</p>
+
+            <div class="food-gallery">
+                <img src="/static/image/food1.jpg" alt="Food 1">
+                <img src="/static/image/food2.jpg" alt="Food 2">
+                <img src="/static/image/food3.jpg" alt="Food 3">
+            </div>
     </body>
     </html>
-    """)
+    """
+    return HttpResponse
 
-#Order placement page view 
-def order_page(request):
-    return HttpResponse("""
-    <!DOCTYPE html>
-    <html>
-    <head>
-        <title> Place Your Order</title>
-    </head>
-    <body style="font-family: Arial; text-align:center; margin-top:100px;">
-        <h2>Order Placement Page</h2>
-        <p>This is where customer will place their order.</p>
-        <a href="/" style="text-decoration:none; color:blue;">⬅️ Back to Home</a>
-    </body>
-    </html>
-    """)
-
-# URLS
 urlpatterns = [
-    path("",home, name="home"),
-    path("order/", order_page, name="order"),
+    path("",homepage, name="home"),
 ]
+
+# For serving static files in dvelopment
+urlpatterns += static(settings.STATIC_URL, document_root=setting.STATIC_ROOT)
