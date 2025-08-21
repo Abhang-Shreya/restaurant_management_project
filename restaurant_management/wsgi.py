@@ -1,79 +1,51 @@
 # myapp/views.py
 from django.http import HttpResponse
 from django.urls import path, reverse
-from django.template import Context, Engine
+import random
 
-#Template  engine setup
-template_engine = Engine(
-    DIRS=[],
-    DEBUG=True,
-)
-
-# shared breadcrumb templatr
-breadcrumb_template = template_engine.from_string("""
-{% if breadcrumbs %}
-<nav style="margin-bottom:15px; font-size:14px;">
-    {% for name, url_name in breadcrumbs %}
-        {% if not forloop.last %}
-            <a href="{% url url_name %}">{{ name }}</a> &raquo;
-        {% else %}
-            <span>{{ name }}</span>
-        {% endif %}
-    {% endfor %}
-</nav>
-{% endif %}
-""")
-
-#Base render function 
-def render_page(title, breadcrumbs):
-    page_template = template_engine.from_string(f"""
+#VIEW
+def order_confirmation(request):
+    order_number = random.randint(1000,9999)
+    html = f"""
     <!DOCTYPE html>
-    <html>
+    <html lang="en">
     <head>
-        <title>{title}</title>
+        <meta charset="UTF_8">
+        <title>Order Order Confirmation</tile>
         <style>
             body {{
-                font-family: Arial, sans-serif;
-                padding:20px;
+                font-family: Arial, san-serif;
+                text-align: center;
+                margin-top: 80px;
             }}
-            nav a {{
-                text-decoration: none; 
-                color: blue;
+            .confirmation-box {{
+                display: inline-block;
+                padding: 20px 40px;
+                border: 2px solid #4CAF50;
+                border-radius: 10px;
+                background: #f9fff9;
+                box-shadow: 0 0 10px rgba(0,0,0,0.1);
             }}
-            nav span {{
-                font-weght: bold;
+            h1{{
+                color: #4CAF50
+            }}
+            p {{
+                font-size: 18px;
             }}
         </style>
     </head>
     <body>
-        {{% include "breadcrumb.html" %}}
-        <h1>{title}</h1>
+        <div class="confirmation-box">
+            <h1>✅ Order Confirmed</h1>
+            <p>THANK YOU FOE YOUR PURCHASE.</p>
+            <p>Your order number is : <strong>#{order_number}</strong></p>
+        </div>
     </body>
     </html>
-    """)
-    context = Context({"breadcrumbs": breadcrumbs})
-    return HttpResponse(page_template.render(context, template_engine))
+    """
+    return HttpResponse(html)
 
-#views
-def home(request):
-    breadcrumb = [("Home","home")]
-    return render_page("welcome to Homepage", breadcrumbs)
-
-def menu(request):
-    breadcrumbs = [("home", "home"),("menu", "menu")]
-    return render_page("Menu", breadcrumbs)
-
-def order_confirmation(request):
-    breadcrumbs = [
-        ("Home","home")
-        ("Menu","menu")
-        ("Order confirmation", "order_confirmation"),
-    ]
-    return render_page("order Confrimation", breadcrumbs)
-
-#URL patterns 
-urlpatterns =[
-    path("", home, name="home"),
-    path("menu/" menu, name="menu"),
-    path("order-confirmation/", order_confirmation, name="order_confirmation"),
+# URLS
+urlpatterns = [
+    path("order/confirmation/", order_confirmation, name="order_confirmation"),
 ]
