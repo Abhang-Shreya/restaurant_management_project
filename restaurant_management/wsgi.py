@@ -1,78 +1,102 @@
-# myapp/views.py
-from django.http import HttpResponse
+# feedback_app 
+from django.db import models
+from django import forms
+from django.shortcuts import render, redirect
 from django.urls import path
-from django.conf import settings
-from django.conf.urls.static import static
 
-#Homepage view
-def homepage(request):
-    """
-    <!DOCTYPE html>
-    <html>
-    <head>
-        <title>Restaurant Homepage</tile>
-        <style>
-            body {
-                margin: 0;
-                font-family: Arial, sans-serif;
-                background-image: url('/staic/image/background.jpg');
-                background-siz: cover;
-                background-position: center;
-                background-repeat: no-repeat;
-                min-height: 100vh;
-                color: white;
-                text-align: center;
-            }
-            .overlay{
-                background: rgba(0,0,0,0.6);
-                min-height: 100vh;
-                padding: 40px;
-            }
-            h1{
-                font-size: 3rem;
-                margin-top: 20px;
-            }
-            p {
-                font-size: 1.2rem;
-                margin-bottom: 30px;
-            }
-            .food-gallery{
-                display: grid;
-                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-                gap: 20px;
-                max-width: 100px;
-                margin: 0 auto;
-            }
-            .food-gallery img{
-                width: 100%;
-                height: auto;
-                border-radius: 12px;
-                box-shadow: 0px 4px 10px rgba(0,0,0,0.5);
-                transition: transform 0.3s ease;
-            }
-            .food-gallery img:hover {
-                transform: scale(1.05);
-            }
-        </style>
-    </head>
-    body>
-        <div class="overlay">
-            <h1>Welcome to Our Restaurant </h1>
-            <p>Delicious food, cozy atmosphere, and warn hospitality</p>
+#MODEL
+class Feedback(models.Model):
+    name = models.CharField(max_length=100)
+    feedback_text = models.TextField()
+    submitted_at = models.DateTimeField(auto_now_add=True)
 
-            <div class="food-gallery">
-                <img src="/static/image/food1.jpg" alt="Food 1">
-                <img src="/static/image/food2.jpg" alt="Food 2">
-                <img src="/static/image/food3.jpg" alt="Food 3">
-            </div>
-    </body>
-    </html>
-    """
-    return HttpResponse
+    def __str__(self):
+        return f"{self.name} - {self.submitted_at.strftime('%Y-%m-%d %H:%M')}"
 
+#Form
+class FeedbackForm(forms.ModelForm):
+    class Meta:
+        model = Feedback
+        fields = ["name", "feedback_text"]
+        widgets = {
+            "name": forms.TextInput("class":"form-control", "plcehoder":"Enter your name"),
+            "feedback_text": form.Textarea(attrs={"class": "form-control", "rows":4, "Write your feedback here..."}),
+        }
+
+#View
+def feedback_view(request):
+    if request.method == "POST":
+        form = FeedbackForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect("feedback_thanks")
+        else:
+            form = FeedbackForm()
+        return render(request, "feedback_form.html", {"form": form})
+
+def feedback_thanks(request):
+    return render(request, "feedback_thanks.html")
+
+#URLS
 urlpatterns = [
-    path("",homepage, name="home"),
+    path("feedback/", feedback_view, name="feedback"),
+    path("feedback/thanks/", feedback_thanks, name="feedback_thanks"),
 ]
 
-# For serving static files in dvelopment
-urlpatterns += static(settings.STATIC_URL, document_root=setting.STATIC_ROOT)
+#Templates: feedback_form.html
+"""
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Feedback Form</title>
+    <style>
+    body {
+        font-family: Arial, sans-serif;
+        margin: 40px;
+    }
+    .container {
+        max-width: 500%;
+        margin: 40px;
+    }
+    .form-control {
+        width: 100%;
+        padding: 8px;
+        margin: 8px 0;
+    }
+    button {
+        background: #28a745;
+        color:white;
+        border: none;
+        padding:10px 20px;
+        cursor: pointer;
+    }
+    buuton:hover{
+        background: #218838;
+    }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Submit Your Feedback</h2>
+        <form method="POST">
+            {% csrf_tocken %}
+            {{ form.as_p }}
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+</body>
+</html>
+"""
+
+#Templates: feedback_thanks.html
+"""
+<!DOCTYPE html>
+<head>
+    <title>Thank you for your feedback! </title>
+</head>
+<body>
+    <h2>Thank you For your Feedback!</h2>
+    <a herf="/feedback/">Submit another</a>
+</body>
+</html>
+""" 
