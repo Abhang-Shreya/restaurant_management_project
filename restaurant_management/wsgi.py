@@ -1,107 +1,76 @@
 # shopping_cart_app.py
 # Run this as part of a Django project 
 
-from django.http import Httpresponse, HttpresponseRedirect
+from django.http import Httpresponse, HttpResponseRedirect
 from django.shortcuts import render, redirect
 from django.urls import path
+from myapp.view import homepage
 
-# Dumppy menu item 
-MENU_ITEMS =[
-    {"id":1, "name": "Pizza","price":250},
-    {"id":2, "name": "burger", "price":150};
-    {"id":3, "name": "pasta", "price": 200},
-]
+# Model
+class TodaySpecial(models.Model):
+    name = models.CharField(max_length=100)
+    description = models.TextField()
+    price = models.DecimalField(max_digits=6, decimal_places=2)
 
-#Homepage - menu
-def menu(request):
-    return render(request, "menu.html", {"menu": MENU_ITEMS})
+    def __str__(self):
+        return self.name
 
-#Add item to cart 
-def add_to_cart(request, item_id):
-    cart = request.session.get("cart", {})
-    cart[str(item_id)] = cart.get(str(item_id), 0) + 1
-    request.session["cart"] = cart 
-    return redirect("menu")
+#view
+def homepage(request):
+    specials = TodaySpecial.objects.all()
 
-#View cart
-def view_cart(request):
-    cart =request.session.get("cart",{})
-    cart_items = []
-    total = 0
-
-    for item_id, qty in cart.item():
-        for menu_item in MENU_ITEMS:
-            if menu_item["id"] == int(item_id):
-                subtotal = menu_item["price"]* qty
-                cart_items.append({
-                    "name": menu_item["name"],
-                    "price":menu_item["price"],
-                    "qyt":qyt,
-                    "subtotal":subtotal,
-                })
-
-return render(request, "cart.html",{"cart_item": cart_items, "total": total})
-
-#lear cart 
-def clear_cart(request):
-    request.session["cart"] = {}
-    return redirect("view_cart")
+    # Inline template (instead of a separate HTML file)
+    template_string="""
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Restaurant Homepage </title>
+    <style>
+        body {
+            font-family: Arial, sans-serif; 
+            margin: 20px;
+        }
+        h1{
+            color: darkgreen;
+        }
+        .specials{
+            display: grid;
+            grid-template-columns: 1fr 1fr; gsp: 20px;
+        }
+        .card {
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            box-shadow: 2px 2px 6px rgBA(0,0,0,0.1);
+        }
+        .price{
+            font-weight: bold;
+            color: darkred;
+        }
+    </style>
+</head>
+<body>
+    <h1>Welcome to Our Restaurant</h1>
+    <h2>Today's Special</h2>
+    <div class="special">
+        {% for item in specials %}
+        <div class="card">
+            <h3>{{ item.name }}</h3>
+            <p>{{ item.description }}</p>
+            <p class="price">${{ item.price }}</p>
+        </div>
+    {% empty %}
+        <p>No Special available today.</p>
+    {% endfor %}
+    </div>
+</body>
+</html>
+"""
+django_engine = engines['django']
+template = django_engine.from_string(template_string)
+return HttpResponse(template.render({'special': special}, request))
 
 #URLS
 urlpatterns = [
-    path("/", menu, name="menu"),
-    path("add/<int:item_id>/", add_to_cart, name="add_to_cart"),
-    path("cart/", view_cart, name="view_cart"),
-    path("clear/", clear_cart, name="clear_cart"),
+    path('', homepage, name='home'),
 ]
-
-#Templates
-#put these template in "template"folder
-
-#template/menu.html
-"""
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Menu</title>
-</head>
-<body>
-    <h1>Menu</h1>
-    <ul>
-        {% for item in menu %}
-        <li>
-            {{ item.name }} - ${{ item.price }}
-            <a herf="{% url 'add_to_cart' item.id%}>Add to cart</a>
-        </li>
-        {% endfor%}
-    </ul>
-    <a herf="{% url 'view_cart' %}>View Cart </a>
-</body>
-</html>
-"""
-
-# templates/cart.html
-"""
-<!DOCTYPE html>
-<html>
-<head>
-    <title></title>
-</head>
-<body>
-    <h1>Shopping Cart</h1>
-    {% if cart_items %}
-        <ul>
-        {% for item in cart_items %}
-            <li>{{ item.name }} (x{{ item.qty }}) - ${{ item.subtotal }}</li>
-        {% endfor %}
-        </ul>
-        <h3> Total: ${{ total }}</h3>
-        <a href="{% url 'clear_cart' %}">Clear Cart </a>
-    {% else %}
-        <p>Your cart is empty. </p>
-    {% endif %}
-    <br>
-    <a herf="{% url 'menu' %}">Back to Menu</a>
-</body>
-</html>
-"""
