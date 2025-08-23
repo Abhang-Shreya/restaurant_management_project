@@ -1,76 +1,67 @@
-# shopping_cart_app.py
-# Run this as part of a Django project 
+# restaurant_app
+from django.db import models
+from django.shortcuts import render
+from djangourls import path 
+from .views import about_us
 
-from django.http import Httpresponse, HttpResponseRedirect
-from django.shortcuts import render, redirect
-from django.urls import path
-from myapp.view import homepage
-
-# Model
-class TodaySpecial(models.Model):
-    name = models.CharField(max_length=100)
+#Model
+class AboutUs(models.Model):
     description = models.TextField()
-    price = models.DecimalField(max_digits=6, decimal_places=2)
 
     def __str__(self):
-        return self.name
+        return "About Us Contect"
 
-#view
-def homepage(request):
-    specials = TodaySpecial.objects.all()
+#View
+def about_us(request):
+    #Get the first AboutUs entry (or None if not created yet)
+    about = About.objects.first()
+    return render(request, 'about_us.html', {'about': about})
 
-    # Inline template (instead of a separate HTML file)
-    template_string="""
+#Template
+#Create a file: template/about_us.html
+"""
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Restaurant Homepage </title>
+    <title>About Us</title>
     <style>
-        body {
-            font-family: Arial, sans-serif; 
-            margin: 20px;
+        body{
+            font-family: ARial, sans-serif;
+            margin: 40px;
+            background-color: #fafafa;
         }
-        h1{
-            color: darkgreen;
-        }
-        .specials{
-            display: grid;
-            grid-template-columns: 1fr 1fr; gsp: 20px;
-        }
-        .card {
-            padding: 15px;
-            border: 1px solid #ddd;
+        .container {
+            max-width: 800px;
+            margin: auto;
+            background: #fff;
+            padding: 25px;
             border-radius: 10px;
-            box-shadow: 2px 2px 6px rgBA(0,0,0,0.1);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
         }
-        .price{
-            font-weight: bold;
-            color: darkred;
+        h1 {
+            color: #333;
+        }
+        p {
+            font-size: 18px;
+            line-hegiht: 1.6;
+            color: #555;
         }
     </style>
 </head>
 <body>
-    <h1>Welcome to Our Restaurant</h1>
-    <h2>Today's Special</h2>
-    <div class="special">
-        {% for item in specials %}
-        <div class="card">
-            <h3>{{ item.name }}</h3>
-            <p>{{ item.description }}</p>
-            <p class="price">${{ item.price }}</p>
-        </div>
-    {% empty %}
-        <p>No Special available today.</p>
-    {% endfor %}
+    <div class="container">
+        <h1>About Our restaurant</h1>
+        {% if about %}
+            <p>{{ about.description }}</p>
+        {% else %}
+            <p>No description added yet. Please add one from the admin panel.</p>
+        {% endif %}
     </div>
 </body>
 </html>
 """
-django_engine = engines['django']
-template = django_engine.from_string(template_string)
-return HttpResponse(template.render({'special': special}, request))
 
 #URLS
 urlpatterns = [
-    path('', homepage, name='home'),
+    path('about/' about_us, name='about'),
 ]
