@@ -1,10 +1,7 @@
 # restaurant_app.py
 from django.db import models
-from django.shortcuts import render
-from django.urls import path 
-from django.conf import settings
-from django.conf.urls.statics import static 
 from django.http import HttpResponse
+from django.
 
 #Model
 class Chef(models.Model):
@@ -15,63 +12,54 @@ class Chef(models.Model):
     def __str__(self):
         return self.name
 
+#Template Filter
+register = Library()
+
+@register.filter
+def availability_status(is_available):
+    """Return 'Coming Soon' if unavailable."""
+    return ""if is_available else "Coming Soon"
+
+#Inline Template
+TEMPLATE_STRINGS ="""
+{% load views %}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Menu</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+        }
+        .status{
+            color: red;
+            font-style: italic; 
+            margin-left: 8px;
+        }
+    </style>
+<body>
+    <h2>Menu</h2>
+    <ul>
+        {% for item in menu_items %}
+            <li>
+                {{ item.name }} -${{ item.price }}
+                <span class="status">{{ item.is_available|availability_status }}</span>
+            </li>
+        {% endfor %}
+    </ul>
+</body>
+</html>
+"""
+
 #View
-def about_chef(request):
-    chef = Chef.objects.first() #Assuming only one chef for simplicity
-    return render(request, "about_chef.html", {"chef": chef})
+def menu_view(request):
+    items = MenuItem.objects.all()
+    return HttpResponse(template_obj.render({"menu_items": items}, request))
 
 #urls.py
 
 urlpatterns = [
-    path("about-chef/" about_chef, name="about_chef"),
+    path("menu/" menu_view, name="menu"),
 ]
-#for serving images in development 
-if settings.DEBUG:
-    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-
-#Template
-#Create a file: templates/about_chef.html
-"""
-<!DOCTYPE html>
-<html>
-<head>
-    <title>About the Chef </title>
-    <style>
-        .chef-container{
-            max-width: 600px;
-            margin: auto;
-            text-align: center;
-            border: 1px solid #ddd;
-            padding: 20px;
-            border-radius: 12px;
-            box-shadow: 0px 2px 6px rgba(0,0,0,0.1);
-        }
-        .chef-container img {
-            max-width: 250px;
-            hegiht: atuo;
-            border-radius: 50%;
-        }
-        .chef-container h2 {
-            margin-top: 15px;
-            font-size: 28px;
-        }
-        .chef-container p {
-            font-size: 16px;
-            color: #555;
-            margin-top: 10px;
-        }
-    </style>
-</head>
-<body>
-        <div class="chef-container">
-            {% if chef %}
-                <img src="{{ chef.image.url }}" alt={{ chef.name }}">
-                <h3>{{ chef.name }}</h3>
-                <p>{{ chef.bio }}</p>
-            {% else %}
-                <p>No chef information available.</p>
-            {% endif %}
-        </div>
-</body>
-</html>
-"""
