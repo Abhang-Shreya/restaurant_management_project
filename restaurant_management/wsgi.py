@@ -1,87 +1,92 @@
-# restaurant_app.py
-from django.db import models
-from django.shortcuts import render
-from django.urls import path 
-
-#Model
-class OpeningHour(models.Model):
-    DAY_CHOICES =[
-        ("Monday","Monday"),
-        ("Teusday", "Teusday"),
-        ("Wednesday", "Wednesday"),
-        ("Thursady", "Thursday"),
-        ("Friday", "Firday"),
-        ("Saturday", "Saturday"),
-        ("Sunday",  "Sunday"),
-    ]
-
-    day = models.CharField(max_length=10, choices = DAY_CHOICES, unique=True)
-    open_time= models.TimeField()
-    close_time = models.TimeField
-
-    class Meta:
-        ordering = ["list(DAY_CHOICES).index(day)"] #maintain weekday order
-
-    def __str__(self):
-        return f"{self.day}: {self.open_time} - {self.close_time}"
-
-#View
-def home(request):
-    opening_hour = OpeningHour.objects.all()
-    return render(request,"home.html",{"opening_hour": opening_hours})
-
-#urls.py
-
-urlpatterns = [
-    path("" home, name="home"),
-]
-
-#Templates (home.html)
-"""
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Restaurant Homepages</title>
+<meta charset="UTF-8">
+    <title>Contact Us</title>
     <style>
         body {
             font-family: Arial, sans-serif;
-            margin: 20px;
+            background-color: #f9f9f9;
+            margin: 0;
+            padding: 0;
         }
-        h1 {
-            color: #333;
-        }
-        table{
-            width: 300px;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-        th, td {
-            border:1px solid #ccc;
-            padding: 8px;
+
+        .contact-container {
+            max-width: 600px;
+            margin: 50px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
             text-align: center;
         }
-        th {
-            background: #f2f2f2;
+
+        .contact-container h2{
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        ..contact-container p {
+            color: #666;
+            margin-bottom: 20px;
+        }
+
+        form label {
+            display: block;
+            text-align:left;
+            margin: 10px 0 5px;
+            color: #333;
+        }
+
+        form input,
+        form textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid; #ccc;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        form textarea {
+            resize: vertical;
+        }
+
+        form button {
+            margin-top: 15px;
+            background: #28a745;
+            color:white;
+            padding:12px;
+            width: 100%;
+            border: none;
+            border-radiud: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        form buttom:hover {
+            background: #218838;
         }
     </style>
 </head>
 <body>
-    <h1>Welcome to Our Restaurant</h1>
-    <h2>Opening Hours</h2>
-    <table>
-        <tr>
-            <th>Day</th>
-            <th>Open</th>
-            <th>Close</th>
-        </tr>
-        {% for hour in opening_hours %}
-        <tr>
-            <td>{{ hour.day }}</td>
-            <td>{{ hour.open_time|time:"H:i" }}</td>
-            <td>{{ hour.close_time|time:"H:i" }}</td>
-        </tr>
-        {% endfor %}
-    </table>
+
+    <div class="contact-container">
+        <h2>Contact Us</h2>
+        <p>We'd love to hear from you! Please fill out the form below</p>
+
+        <form>
+            <label>Name:</label>
+            <input type="text" placeholder="Enter your name">
+
+            <label>Email:</label>
+            <input type="email" placeholder="Enter your email">
+
+            <label>Message:</label>
+            <textarea row="5" placeholder="Write your message"></textarea>
+
+            <button type="submit">Send Message</button>
+        </form>
+    </div>
+
 </body>
 </html>
-"""
