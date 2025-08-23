@@ -1,92 +1,52 @@
+#view.py
+from django import forms
+from django.http import HttpResponse
+from django.shorcuts import render
+from django.urls import path
+from django.conf import settings
+from.conf.urls.statics import statics
+
+#Models
+class contectForm(forms.Form):
+    name = forms.CharField(max_length=100, required=True)
+    email = form.EmailField(required=True) #Ensurs only valid email
+    message = forms.CharField(widget=forms.Textarea, required=True)
+
+#View
+def contact_view(request):
+    if request.method =="POST"
+        form = ContactForm(request.POST)
+        if form.is_valid():
+            name = form.cleaned_data['name']
+            email = form.cleaned_data['email']
+            message = form.cleaned_data['message']
+            #For now, just display sucess message
+            return HttpRespone(f"<h2>Thanks {name}!<h2><p>Your message has been recevied.</p>")
+    else:
+        form = ContactForm()
+
+    return render(request, "contact.html", {"form": form})
+
+#URL Configuration
+urlpatterns = [
+    path("contact/", contact_view, name="contact"),
+]
+
+#Templates 
+# create a file named"contact.html" in your templates folder with this contect:
+"""
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-<meta charset="UTF-8">
     <title>Contact Us</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f9f9f9;
-            margin: 0;
-            padding: 0;
-        }
-
-        .contact-container {
-            max-width: 600px;
-            margin: 50px auto;
-            background: white;
-            padding: 30px;
-            border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-            text-align: center;
-        }
-
-        .contact-container h2{
-            color: #333;
-            margin-bottom: 10px;
-        }
-
-        ..contact-container p {
-            color: #666;
-            margin-bottom: 20px;
-        }
-
-        form label {
-            display: block;
-            text-align:left;
-            margin: 10px 0 5px;
-            color: #333;
-        }
-
-        form input,
-        form textarea {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid; #ccc;
-            border-radius: 5px;
-            font-size: 14px;
-        }
-
-        form textarea {
-            resize: vertical;
-        }
-
-        form button {
-            margin-top: 15px;
-            background: #28a745;
-            color:white;
-            padding:12px;
-            width: 100%;
-            border: none;
-            border-radiud: 5px;
-            cursor: pointer;
-            font-size: 16px;
-        }
-
-        form buttom:hover {
-            background: #218838;
-        }
-    </style>
 </head>
 <body>
-
-    <div class="contact-container">
-        <h2>Contact Us</h2>
-        <p>We'd love to hear from you! Please fill out the form below</p>
-
-        <form>
-            <label>Name:</label>
-            <input type="text" placeholder="Enter your name">
-
-            <label>Email:</label>
-            <input type="email" placeholder="Enter your email">
-
-            <label>Message:</label>
-            <textarea row="5" placeholder="Write your message"></textarea>
-
-            <button type="submit">Send Message</button>
-        </form>
-    </div>
-
+    <h2>Contact Us<h2>
+    <form method ="POST">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Send</button>
+    </form>
 </body>
 </html>
+"""
