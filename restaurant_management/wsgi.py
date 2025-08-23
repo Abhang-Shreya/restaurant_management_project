@@ -1,67 +1,84 @@
 # restaurant_app
-from django.db import models
+from djano.core.paginator import paginator
 from django.shortcuts import render
-from djangourls import path 
-from .views import about_us
+from django.db import models
 
 #Model
-class AboutUs(models.Model):
+class MenuItem(models.Model):
+    name = models.CharField(max_length=100)
     description = models.TextField()
+    price = models.DecimalField(max_digits=6, decimal_places=2)
 
     def __str__(self):
-        return "About Us Contect"
+        return self.name
 
 #View
-def about_us(request):
-    #Get the first AboutUs entry (or None if not created yet)
-    about = About.objects.first()
-    return render(request, 'about_us.html', {'about': about})
+def menu(request):
+    item_list = MenuItem.objects.all().order_by("id")#fetch all items
 
-#Template
-#Create a file: template/about_us.html
+    paginator = Paginator(item_list, 5) # 5 items per page
+    page_number = request.GET.get("page")
+    page_obj = paginator.get_page(page_number)
+
+    return render(request, "menu.html", {"page_obj": page_obj})
+
+#urls.py
+from django.urls import path
+from . import views 
+
+urlpatterns = [
+    path("menu/", views.menu, name="menu"),
+]
+
+#Template/menu.html
 """
 <!DOCTYPE html>
 <html>
 <head>
-    <title>About Us</title>
+    <title>Menu</title>
     <style>
-        body{
-            font-family: ARial, sans-serif;
+        .pagination {
             margin: 40px;
-            background-color: #fafafa;
+            display: flex;
+            gap: 10px;
         }
-        .container {
-            max-width: 800px;
-            margin: auto;
-            background: #fff;
+        .paginationn a, .paginationation span  {
             padding: 25px;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            border: 1px solid #ddd;
+            text-decortion: none;
         }
-        h1 {
-            color: #333;
-        }
-        p {
-            font-size: 18px;
-            line-hegiht: 1.6;
-            color: #555;
+        .pagination .current {
+            background: #007BFF;
+            color: white;
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <h1>About Our restaurant</h1>
-        {% if about %}
-            <p>{{ about.description }}</p>
-        {% else %}
-            <p>No description added yet. Please add one from the admin panel.</p>
+    <h1>Menu</h1>
+    {% for item in page_obj %}
+        <div>
+            <h3>{{ item.name }} - ${{ item.price }}</h3>
+            <p>{{ item.decrition }}</p>
+        </div>
+        <hr>
+    {% empty %}
+        <p>No menu item available.</p>
+    {% endfor %}
+
+    <!-- Pagination Controls -->
+    <div class="pagination">
+        {% if page_obj.has_previous %}
+            <a href="?page=1">Frist</a>
+            <a herf="?page={{ page-obj.previous_page_number }}">Previous</a>
+        {% endif %}
+
+        <span class="current">Page {{ page_obj.number }}of {{ page_obj.paginator.num-pages }}</span
+            
+        {% if page_obj.has_next %}
+            <a herf="?page={{ page_obj.next_page_number }}">Next</a>
+            <a herf="?page={{ page_obj.paginator.num_pages }}">Last</a>
         {% endif %}
     </div>
 </body>
 </html>
 """
-
-#URLS
-urlpatterns = [
-    path('about/' about_us, name='about'),
-]
