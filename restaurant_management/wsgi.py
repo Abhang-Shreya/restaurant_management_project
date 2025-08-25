@@ -1,100 +1,89 @@
-# view_and_templates.py
-from django.shortcuts import render
-from django.htpp import Httprespone 
-from django.utils import timezone
-from django.urls import path
+import sys 
 from django.conf import settings
-from djanngo.conf.urls.static import static
+from django.http import HttpResponne
+from django.urls import path
+from django.core.mangement import execute_from_command_line
+from django.template import engine 
 
-#VIEWS
-def home(request):
-    return render(request, "home.html")
-
-def about(request):
-    return render(request, "about.html")
-
-#URLS
-urlpatterns =[
-    path('', home, name='home'),    
-    path('about/', about, name='about')
-]+ static(setting.static_URL, document_root=setting.STATIC_ROOT)
-
-#BASE TEMPLATES (with folder)
-# template/base.html
-"""
+#Django Minimal Config
+setting.configure(
+    DEBUG=True,
+    SECRET_KEY="a-random-secret-key",
+    ROOT_URLCONF=__name__,
+    ALLOWED_HOST=["*"],
+    TEMPLATES=[{
+        "BACKEND":"django.template.backends.django.DanjgoTemplates",
+        "DIRS":[], #no external template folder, using inline template
+        "APP_DIRS":True,
+    }],
+)
+#
+ABOUT_TEMPLATE="""
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <tile>{% block title %}My Website{% endblock %}</title>
+<meta charset="UTF-8">
+    <tile>About Us</title>
     <style>
         body{
-
             font-family:arial, sans-serif;
-            margin: 0;
-            padding: 0;
+            margin: 20px;
+            padding: 1.6;
         }
 
         header {
-            background: #333; 
-            color:#fff;
-            padding:10px;
             text-align: center;
+            margin-bottom: 30px;
         }
         
-        main {
-            min-hegiht: 79vh;
-            padding: 20px;
+        .contect {
+            max-width: 80px;
+            margin-bottom: 30px;
         }
+
         footer {
-            backgroud: #f2f2f2;
             text-algin: center;
-            padding: 10px;
-            margin-top:20px;
+            margin-top:40px;
+            color: gray;
+            font-size: 0.9em;
         }
+
     </style>
 </head>
 <body>
     <header>
-        <h1>My Restaurant</h1>
-        <nav>
-            <a herf="/">Home</a> | <a herf="/about/">About</a>
-        </nav>
+        <h1>About Us</h1>
     </header>
 
-    <main>
-        {% block contect %}{% endblock %}
-    </main>
+    <div class="contect">
+        <p>
+            Welcome to our website! We are passionate about delevering quality
+            service and ensuring customer satisfaction. Our team is dedicated
+            to innovation, creativity, and excellence in everthing we do.
+        </p>
+        <p>
+            This is just some placeholder text for now. You can replace it later
+            with actual details about your organization, mission, and values.
+        </p>
+    </div>
 
     <footer>
-        &copy; {{ year }}My Restaurant. All right reserved.
+        <p>&copy; 2025 Your Company. All Right Reserved.</p>
     </footer>
 </body>
 <html>
 """
 
-#ABOUT TEMPLATE
-#templates/about.html
-"""
-{% extend 'base.html' %}
-{% block title %}Home{% endlock %}
-{%block contect %}
-    <h2>Welcome to our restaurant!</h2>
-    <p>This is homepage.</p>
-{% endblock %}
-"""
+#View
+def about_view(request):
+    template = engines["django"].from_string(ABOUT_TEMPLATE)
+    return HttpResponne(template.render({},request))
 
-#ABOUT TEMPLATE
-# template/about.html
-"""
-{% extend 'base.html' %}
-{% block title %}About {% endblock %}
-{% block contect %}
-    <h2><About Us </h2>
-    <p> WE serve delicious food made with love.</p>
-{% endblock %}
-"""
+#URLS
+urlpatterns = [
+    path("about/", about_view),
+]
 
-#CONTEXT PROCESSOR(for current year)
-# context_processors.py
-def current_year(request):
-    return {"year": timezone.now().year}
+#Run
+if __name__ == "__main__"
+    execute_from_command_line(sys.argv)
