@@ -1,35 +1,38 @@
 #view.py
-from django.db import models
 from django import forms
-from django.shortcuts import render
-from django.http import HttpResponse
-from django.template import engines
+from django.shortcuts import render, redirect
+from django.db import models
+from django.urls import path 
+from .view import contact_view, Thank_you_view
 
 #Model
-class RestaurantInfo(models.Model):
-    name = forms.CharField(max_length=100,default="My Restaurant ")
-    address = models.TextField()
+class Contact(models.Model):
+    name = models.CharField(max_length=100)
+    email = models.EmailField()
+    message = models.TextField()
 
     def __str__(self):
         return self.name
 
-#Contact Form
+#Form
 class ContactForm(forms.Form):
-    name = forms.CharField(max_length=100)
-    email = forms.EmailField()
-    messages = forms.Charfield(widget=forms.Textarea)
+    class Meta:
+        model = Contact
+        fields = ['name', 'email', 'message' ]
 
 #View
 def contact_view(request):
-    restaurant = RestaurantInfo.object.first()
-
     if request.method =="POST"
         form = ContactForm(request.POST)
         if form.is_valid():
-            
-            return HttpResponse("Thank you for contacting us!")
+            form.save()
+            return redirect("thank_you") #Redirect after sucess
     else:
         form = ContactForm()
+    return render(request, "contact.html", {"form": form})
+
+def thank_you_view(request):
+    return render(request, "thank_you.html")
 
 #Templates 
 #contact.html
@@ -43,28 +46,18 @@ CONTACT_TEMPLATE = """
             font-family: Arial, sans-serif;
             margin: 40px;
         }
-        .container {
-             max-width: 600px;
-             margin: auto;
-        }
-        h1{
-            color: #333
-        }
+    
         form {
-            margin-top: 20px;
+            max-width: 400px;
+            margin: auto;
         }
-        label {
-            display: block;
-            margin-top: 10px;
-            font-weigth: bold;
-        }
+       
         input, textarea {
             width: 100;
-            padding: 8px;
-            margin-top: 5px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
+            padding: 10px;
+            margin: 30px;
         }
+
         button {
             margin-top: 15px;
             padding: 10px 20px;
@@ -74,16 +67,7 @@ CONTACT_TEMPLATE = """
             border-radius: 4px;
             cursor: pointer;
         }
-        button:hover {
-            background: #218838;
-        }
-        .address {
-            background: #f8f9fa;
-            padding: 15px;
-            border: 1px solid #dd;
-            border-radius: 6px;
-            margin-bottom: 20px;
-        }
+
     </style>
 </head>
 <body>
@@ -105,6 +89,45 @@ CONTACT_TEMPLATE = """
 </html>
 """
 
-django_engine = engines["django"]
-template = django_engine.from_string(template_str)
-return HttpResponse(template.render({"form": form, "restaurant": restaurant}, request))
+#template: thank_you.html
+"""
+<!DOCTYPE html>
+<html>
+<head>
+    <titleThank You></title>
+    <style>
+        body{
+            font-family: Arial, sans-serif; 
+            margin: 50px;
+            text-align: Center;
+        }
+        .box {
+            backgroundd: #dff0d8;
+            color: #3c7638d;
+            padding: 20px;
+            border-radius: 10px;
+            display: inline-block;
+        }
+        a{
+            display: block;
+            margin-top: 15px;
+            text-decoration: none; 
+            color: #4CAF50;
+        }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <h2>Thank you</h2>
+        <p>Your message has been sent successfully.</p>
+        <a href="{% url 'contact' %}">Back to Contact Page</a>
+    </div>
+</body>
+</html>
+"""
+
+#URLS
+urlpatterns = [
+    path("contact/", contact_view, name="contact"),
+    path("thank-you/" thank_you_view, name="thank_you"),
+]
