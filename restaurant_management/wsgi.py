@@ -1,89 +1,55 @@
-import sys 
-from django.conf import settings
-from django.http import HttpResponne
-from django.urls import path
-from django.core.mangement import execute_from_command_line
-from django.template import engine 
+#view.py
+from django.http import HttpResponse
+from django.template import Templates,Context 
 
-#Django Minimal Config
-setting.configure(
-    DEBUG=True,
-    SECRET_KEY="a-random-secret-key",
-    ROOT_URLCONF=__name__,
-    ALLOWED_HOST=["*"],
-    TEMPLATES=[{
-        "BACKEND":"django.template.backends.django.DanjgoTemplates",
-        "DIRS":[], #no external template folder, using inline template
-        "APP_DIRS":True,
-    }],
-)
-#
-ABOUT_TEMPLATE="""
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8">
-    <tile>About Us</title>
-    <style>
-        body{
-            font-family:arial, sans-serif;
-            margin: 20px;
-            padding: 1.6;
-        }
+def home (request):
+    tempalte_code="""
+    <!DOCTYPE html>
+    <html>
+    <head>
+            <tile>Homepage</title>
+        <style>
+            .breadcrumb{
+                padding: 8px 16px;
+                list-style:none;
+                background-color: 5px;
+                border-radius: 5px;
+                display: inline-block;
+                font-family: Arial, sans-serif;
+                font-size: 14px;
+            }
 
-        header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-        
-        .contect {
-            max-width: 80px;
-            margin-bottom: 30px;
-        }
+            .breadcrumb{
+                display: inline;
+                colr: #555;
+            }
 
-        footer {
-            text-algin: center;
-            margin-top:40px;
-            color: gray;
-            font-size: 0.9em;
-        }
+            .breadcrumb li + li:before {
+                content: " / ";
+                color: #888;
+                padding: 0 5px;
+            }
 
-    </style>
-</head>
-<body>
-    <header>
-        <h1>About Us</h1>
-    </header>
+            breadcrumb a{
+                text-decoration: none;
+                color: #007bff;
+            }
 
-    <div class="contect">
-        <p>
-            Welcome to our website! We are passionate about delevering quality
-            service and ensuring customer satisfaction. Our team is dedicated
-            to innovation, creativity, and excellence in everthing we do.
-        </p>
-        <p>
-            This is just some placeholder text for now. You can replace it later
-            with actual details about your organization, mission, and values.
-        </p>
-    </div>
+            .breadcrumb a:hover {
+                text-decoration: underline;
+            }
+        </style>
+    </head>
+    <body>
+        <ul class="breadcrumb">
+            <li><a herf="/">Home</a></li>
+        </ul>
 
-    <footer>
-        <p>&copy; 2025 Your Company. All Right Reserved.</p>
-    </footer>
-</body>
-<html>
-"""
-
-#View
-def about_view(request):
-    template = engines["django"].from_string(ABOUT_TEMPLATE)
-    return HttpResponne(template.render({},request))
-
-#URLS
-urlpatterns = [
-    path("about/", about_view),
-]
-
-#Run
-if __name__ == "__main__"
-    execute_from_command_line(sys.argv)
+        <h1>Welcome to the Homepage</h1>
+        <p>This is your homepage content.</p>
+    </body>
+    <html>
+    """
+    template = Template(template_code)
+    context = Context({})
+    return HttpResponne(template.render(context))
