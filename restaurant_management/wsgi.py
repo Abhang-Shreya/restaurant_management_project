@@ -1,55 +1,101 @@
 #view.py
-from django.http import HttpResponse
-from django.template import Templates,Context 
+from django.urls import path 
+from django.conf import settings
+from django.conf.urls.static import static
+from django.core.wsgi import get_wsgi_application
+import django 
 
-def home (request):
-    tempalte_code="""
+#Django setup for single-file demo 
+setting.configure(
+    DEBUG=True,
+    ROOT_URLCONF=__name__,
+    SERCET_KEY="a-random-secret-key",
+    ALLOWED_HOST=["*"],
+    TEMPLATES=[{
+        "BACKEND": "django.template.backends.django.DjangoTemplates",
+        "DIRS": [],
+    }],
+)
+django.setup()
+
+#View
+def home(request):
+    opening_hour = {
+        "Monday": "9:00 AM - 9:00 PM",
+        "Tuesday": "9:00 AM - 9:00 PM",
+        "Wednesday":"9:00 AM - 9:00 PM",
+        "Thursday":"9:00 AM - 9:00 PM",
+        "Friday":"9:00 AM - 10:00pm",
+        "Saturday":"10:00 AM - 11:00 PM",
+        "Sunday":"10:00 AM - 8:00 pm",
+    }
+    return render(request, "home.html", {"opening_hours": opemning_hour})
+
+#URL patterns
+urlpatterns = [
+    path("", home, name="home"),
+]
+
+#Template(inline for demo)
+from django.template import engines
+
+tempalte_code="""
     <!DOCTYPE html>
     <html>
     <head>
-            <tile>Homepage</title>
+            <tile>Restaurant Homepage</title>
         <style>
-            .breadcrumb{
-                padding: 8px 16px;
-                list-style:none;
-                background-color: 5px;
-                border-radius: 5px;
-                display: inline-block;
+            body{
                 font-family: Arial, sans-serif;
-                font-size: 14px;
+                padding: 30px;
             }
-
-            .breadcrumb{
-                display: inline;
-                colr: #555;
+            h1 { 
+                color:#33;
             }
-
-            .breadcrumb li + li:before {
-                content: " / ";
-                color: #888;
-                padding: 0 5px;
+            table {
+                border-collapse: collapse;
+                margin-top: 20px;
+                width: 300px;
             }
-
-            breadcrumb a{
-                text-decoration: none;
-                color: #007bff;
+            th, td {
+                padding: 10px;
+                border: 1px solid #ddd;
+                text-align: left;
             }
-
-            .breadcrumb a:hover {
-                text-decoration: underline;
+            th{
+                bacground: #f4f4f4;
             }
         </style>
     </head>
     <body>
-        <ul class="breadcrumb">
-            <li><a herf="/">Home</a></li>
-        </ul>
-
-        <h1>Welcome to the Homepage</h1>
-        <p>This is your homepage content.</p>
+        <h1>Welcome to Our REstaurant!</h1>
+        <h2>Opening Hours</h2>
+        <table>
+            <tr><th>Day</th><th>Hours</th><tr>
+            {% for, day, hours in opening_hour.items %}
+            <tr>
+                <td>{{ day }}</td>
+                <td>{{ hour }}</td>
+            </tr>
+            {% endfor %}
+        </table>
     </body>
     <html>
     """
-    template = Template(template_code)
-    context = Context({})
-    return HttpResponne(template.render(context))
+
+    django_engine = engine['django']
+    template = django_engine.from_string(templatee_code)
+
+from django.template.loader import get_template
+from django.template import TemplateDoesNotExist
+
+#monkey patch so render finds template
+from django.template.loader import engines as template_engines
+template_engines['django'].engine.templates['home.html'] = tempalte
+
+#Runserver for demo
+application = get_wsgi_application()
+
+if __name__ == "__main__":
+    from django.core.management import execute_from_command_line
+    execute_from_command_line()
