@@ -1,78 +1,85 @@
-#view.py
-from django.shortcuts import render
+from django.contrib import admin
 from django.urls import path 
 from django.http import HttpRespone
-from django.conf import settings
-from django.template import engines 
+from django.template import loader
+
+#VIEWS
+def home(request):
+    context = {
+        "title": "Delicious Bites Restaurant - Fine Dining in Mumbai",
+    }
+    template = loader.get_template("home.html")
+    return HttpRespone(template.render(context, request))
+
+def resevations(request):
+    context = {
+        "title": "Reservations - Delicious Bites Restaurant, Mumbai",
+    }
+    template = loader.get_template("reservations.html")
+    return HttpRespone(template.render(context, request))
+
+#URLS
+urlpatterns = [
+    path("admin/", admin.site.urls),
+    path("", home, name="home"),
+    path("reservations/", reservations, name="reservations"),
+]
 
 #Template setup (inline for demo)
-tempalte_code={
-    "base.html":"""
+    """
     <!DOCTYPE html>
     <html lang="en">
     <head>
         <meta charset="UTF-8">
-        <title>Restaurant</title>
-        <style>
-            nav {
-                background: #333;
-                padding: 10px;
-            }
-            nav a {
-                color: white;
-                margin-right: 15px;
-                text-decoration: none;
-            }
-            nav a:hover{
-                text-decoration: underline;
-            }
-        </style>
+        <title>{{ title }}</title>
+    </head>
+    <body>
+    <!-- Breadcrumb-->
+        <nav>
+            <a herf="/">Home</a>
+        </nav>
+
+        <h1>Welcome to delicious Bites! </h1>
+        <p>Experience the best fine dining in mumbai.</p>
+
+        <!--Opening Hours-->
+        <section>
+            <h2>Opening Hours</h2>
+            <p> MOn-Sun: 11:00 AM - 11:00 PM</p>
+        </section>
+
+        <!--Reservations Link-->
+        <nav>
+            <a herf={% url 'reservation' %}>Reservations</a>
+        </nav>
+
+        <!--Footer>
+        <footer>
+            <p>$copy; {{ now|date:"Y" }} Delicious Bites. All rights reserved </p>
+        </footer>
+    </body>
+    <html>
+    """
+
+    #template/reservations.html
+    """
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title>{{ title }}</title>
     </head>
     <body>
         <nav>
-            <a herf="{% url 'home' %}">Home</a>
-            <a herf="{% url 'reservations' %}">Reservations</a>
+            <a herf="/">Home</a> <span>Reservations</span>
         </nav>
-        <div class="contact">
-            {% block contact %}{% endblock %}
-        </div>
-    </body>
-    <html>
-    """,
 
-    "home.html": """
-    {% extends "base.html" %}
-    {% block contact %}
-        <h1>Welcome to Our Restaurant</h1>
-        <p>Enjoy the best dining experience with us!</p>
-    {% endblock %}
-    """,
-
-    "reservation.html": """
-    {% extends "base.html" %}
-    {% block contect %}
         <h1>Reservations</h1>
-        <p>Reservation system coming soon. Please call us to book a table.</p>
-    {% endblocks %}
-    """,
-}
-#Configure template backend
-django_engine = engine['django']
+        <p>Book your table at Delicious Bites Restaurant, Mumbai. (From comming soon!</p>
 
-def render_inline(request, template_name, context=None):
-    template_code = TEMPLATES[templates_name]
-    template = django_engine.from_string(template_code)
-    return HttpRespone(templates.render(context or {}, request))
-
-#Views
-def home(request):
-    return render_inline(request, "home.html")
-
-def resrvations(request):
-    return render_inline(request, "reservations.html")
-
-#URLS
-urlpatters = [
-    path("", home, name="home"),
-    path("reservations/", reservation, name="reservations"),
-]
+        <footer>
+            <p>&copy; {{ now|date:"Y" }}Delicious Bites. All rights reserved.</p>
+        </footer>
+    </body>
+    </html>    
+    """
