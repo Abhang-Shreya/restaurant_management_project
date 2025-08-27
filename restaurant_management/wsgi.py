@@ -1,20 +1,30 @@
 # view.py
-from django.http import HttpResponse
-from django.template import engines
+from django.shorcuts import render
 
 # Examplae menu item 
 MENU_ITEMS = [
-    {"name": "Margherita Pizza", "price": "$9", "despcription":"Classic chesse & tomato pizza"},
-    {"name": "Pasta Alfredo", "price":"$10", "description": "Creamy white sauce pasta with mushrooms"},
-    {"name": "Caesar salad", "price":"$7", "description": "Fresh lettuce, croutons & parmensan"},
+    {"name": "Margherita Pizza", "price": "$9},
+    {"name": "Pasta Alfredo", "price":"$10"},
+    {"name": "Caesar salad", "price":"$7"},
+    {"name": "panner Tikka", "price":"$8"},
 ]
+
+def menu(request):
+    query = request.GET.get("q", "")
+    if query:
+        filtered_items = [item for item in MENU_ITEMS if query.lower()in item["name"].lower()]
+    else:
+        filtered_items = MENU_ITEMS
+    
+    return render(request, "menu.html", {"menu_items": filtered_items, "query": query})
 
 def menu_view(request):
     template_code ="""
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-    <title>Our Menu</tilte>
+    <meta charset="UTF-8">
+    <title> Menu</tilte>
     <style>
         body{
             font-family: Arial, sans-serif;
