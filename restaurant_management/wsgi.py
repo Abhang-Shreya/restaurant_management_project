@@ -25,7 +25,7 @@ def contact(request):
 </head>
 <body>
     <h1>Contact Us</h1>
-    <p>Email: <a herf="mailto:{{ email }}>{{ email }}</a></p>
+    <p>Email: < a herf="mailto:{{ email }}>{{ email }}</a></p>
 
     <h2>opening Hours</h2>
     <ul>
