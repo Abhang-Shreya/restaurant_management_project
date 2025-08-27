@@ -1,97 +1,81 @@
 # staff_project.py
-from django.http import HttpResponse
-from django.template import Context, Temlate
-from django.urls import path
-from django.core.wsgi import get_wsgi_application
+from django.shortcuts import render
 
-#Dummy staff data
-SATFF = [
-    {
-        "name":"Neelam",
-        "role":"Head Chef",
-        "image":"http://via.placeholder.com/150",
-        "description": "Neelam has over 20 year of experirnce crafting delicious "
-    },
-    {
-        "name":"Shreya",
-        "role":"Sous Chef",
-        "image":"http://via.placehoder.com/150",
-        "description":"Shreya sepcializes in crafting unique dishes with fresh ingredients."
-    },
-    {
-        "name":"Sanket",
-        "role": "Manager",
-        "image": "http://via.placeholder.com/150",
-        "description": "Sanket ensures that every guest has a wonderful dinig experience."
-    },       
-]
-
-#Html Templates
-HTML_TEMPLATE ="""
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Our Staff</title>
+def about(request):
+    return render(request, "about.html")
+    """
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+        <meta lang="en">
+        <title>About Us - Delight Restaurant</title>
     <style>
         body{
             font-family: Arial, sans-serif;
-            margin: 20px;
-        }
-        h1{
-            text-align: center;
-        }
-        .satff-container{
-            display: flex;
-            gap: 20px;
-            flex-wrap: wrap;
-            justify-contact: center;
-        }
-        .staff-card {
-            border: 1px solid #ddd;
-            border-radius: 10px;
-            padding: 15px;
-            width:200px;
-            text-align: center;
+            line-heght: 1.6;
+            margin: o;
+            padding: 0;
             background: #f9f9f9;
+            color: #333;
         }
-        .satff-card img{
-            border-radius: 50%;
-            width: 120px;
-            hegith: 120px;
-            object-fit: cover;
+        header{
+            background: #8B0000;
+            color: #fff;
+            padding: 20px;
+            text-align: center;
         }
-        .staff-role{
-            font-style: italic;
-            color: #666;
+        .container{
+            width:80px;
+            margin: 30px auto;
+            background: #fff;
+            padding: 30px;
+            border-radius= 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        h1 h2 {
+            color: #8B0000;
+        }
+        p{
+            margin-bottom: 15px;
+        }
+        .section{
+            margin-bottom: 40px;
         }
     </style>
 </head>
 <body>
-    <h1>Meet Our Staff</h1>
-    <div class="staff-container">
-        {% for memder in staff_members %}
-        <div class="staff-card">
-            <img src="{{ member.image }}" alt="{{ member.name }}" >
-            <h3>{{ member.name }}</h3>
-            <p class="staff-role">{{ member.role }}</p>
-            <p>{{ member.description }}</p>
+    <header>
+    <h1>About Us</h1>
+    </header>
+
+    <div class="container">
+        <div class="section">
+            <h2>Our story</h2>
+            <p>
+                Established in 2010,  </strong>Delight Restaurant</strong> began as a small family-owned eatery
+                with a passion for crafting authentic flavour. What started as a cozy corner spot
+                has now grown into a beloved destination for food lovers, knows for its warn hospitality
+                and carfully prepared dishes. 
+            </p>
         </div>
-    {% endfor %}
+
+        <div class="section">
+            <h2>Our Mission</h2>
+            <p>
+                Our mission is simple: <em>to bring pepole together food</em>.we believe
+                every meal should be an experience of joy, comfort, and communtiy. That's why we focus
+                on using fresh ingredients, sustainable practices, and recipes passed down through gererations.
+            </p>
+        </div>
+
+        <div class="section">
+            <h2>Our Values</h2>
+            <p><strong>Qualitiy: </strong> Only the finest ingredients make it to your plate.</p>
+            <p><strong>Hospitaliy:</strong> Every guest ingredients make it to your plate.</p>
+            <p><strong>Sustainability:</strong>we strive to support local famers and redues waste.</p>
+            <p><strong>Innovation:</strong>While we cherish tradition, we love adding creative twist to classics</p>
+        </div>
     </div>
 </body>
 </html>
 """
-
-# View
-def staff_page(request):
-    template = Template(HTML_TEMPLATE)
-    context = Context({"staff_member": STAFF})
-    return HttpResponse(template.render(context))
-
-#URL
-urlpatterns = [
-    path("staff/" staff_page),
-]
-
-#WSGI application
-application = get_wsgi_application()
