@@ -1,3 +1,15 @@
+#project/urls.py
+from django.contrib import admin
+from django.urls import path
+from django.shortcuts import render
+
+#Views
+def home(request):
+    return render(request, "base.html")
+
+def about(request):
+    
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
