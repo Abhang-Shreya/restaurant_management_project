@@ -1,35 +1,36 @@
-#restaurant_site.py
-
-import sys
-from django.conf import settings
-from django.http import HttpResponse
-from django.urls import path
-from django.template import Context, template
-from django.core.Wsgi import get_wsgi_application
-
-settings.configure(
-    DEBUG=True,
-    ROOT_URLCONF = __name__,
-)
-
-#template
-base_tempalte = template("""
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Restaurant</title>
+    <meta name="viewport" contact="width=device-width, inital-scale=1.0">
+    <title>Restaurant - Privacy policy </title>
     <style>
         body {
             font-family: Arial, sans-serif;
             margin:0;
             padding:0;
+            background:#fafafa;
+            color: #333;
         }
         header {
             background: #333;
             color:white;
-            padding:1em;
+            padding:15px;
             text-align:center;
+        }
+        nav{
+            background: #333;
+            padding: 10px;
+            text-algin: center;
+        }
+        nav a {
+            color: #fff;
+            margin: 0 10px;
+            text decoration:none;
+        }
+        main{
+            padding:20px;
+            min-heght: 70vh;
         }
         footer {
             background:#fafafa; 
@@ -38,51 +39,44 @@ base_tempalte = template("""
             margin-top:2em;
         }
         footer a {
-            margin: 0 10px;
-            text-decoration:none; 
+            text-decoration:underline; 
             color:#333;
-        }
-        footer a:Hover {
-            color:#0077cc;
         }
     </style>
 </head>
 <body>
     <header>
-        <h1> Welcome to Our Restaurant</h1>
+        <h1> Our Restaurant</h1>
     </header>
 
-    <main style="padding:2em; text-align:center;">
-        <h2>Delicious meals crafted with experience</h2>
-        <p>Enjoy the best dining expricence with us.</p>
+    <nav>
+        <a href="index.html">Home</a>
+        <a href="menu.html">Menu</a>
+        <a href = "contact.html">Contact </a>
+    </nav>
+
+    <main>
+        <h2>Privacy policy</h2>
+        <p>
+            This is our pe=rivacy policy. We value your privacy and are committedd to protecting your personal information.
+            This page is a placeholder and can be updated with the actual policy later.
+        </p>
+        <h3>Information Collection</h3>
+        <p>
+            We may collect basic information such as your name and email address when youinteract with our service.
+        </p>
+        <h3>Cookies</h3>
+        <p>
+        Our website may use cookies to enhance user experince. You can disable cookies in your brower settings.
+        </p>
+        <h3>Contact</h3>
+        <p>
+        if you have any questions about this Privacy policy, please contact us at: <a href="mailto:infor@restaurant.com">info@restaurant.com</a>.
+        </p>
     </main>
 
     <footer>
-        <p>© {{ year }} Our Rstaurant. All right reserved. </p>
-        <p>
-            <a herf="http://facebook.com/placeholder" target="_blank">Facebook</a>|
-            <a herf="http://instagram.com/placeholder" target="_blank">Instagram </a>
-        </p>
-        <p>Open Daily: 10:Am - 10pm</p>
+        <p>&copy; 2025 Our Restaurant | <a herf="privacy.html">Privacy policy</a></p>
     </footer>
 </body>
 </html>
-""")
-
-#Views
-from datetime import datetime
-
-def home(request):
-    html = base_tempalte.render(Context({"year": datetime.now().year}))
-    return HttpResponse("html")
-
-#URL patterns
-urlpatterns = [
-    path("", home, name="home"),
-]
-
-application = get_wsgi_application()
-
-if __name__ == "__main__":
-    from django.core.mangement import execute_from_command_line
-    execute_from_command_line(sys.argv)
