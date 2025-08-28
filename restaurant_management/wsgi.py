@@ -6,8 +6,6 @@ from django.shortcuts import render
 #Views
 def home(request):
     return render(request, "base.html")
-
-def about(request):
     
 
 <!DOCTYPE html>
