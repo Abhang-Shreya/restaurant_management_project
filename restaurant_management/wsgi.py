@@ -1,95 +1,88 @@
-#view.py
-from django.shortcuts import render
-from datetime import datetime
+#restaurant_site.py
 
-#Base template with footer including opening hours
-base_html = """
+import sys
+from django.conf import settings
+from django.http import HttpResponse
+from django.urls import path
+from django.template import Context, template
+from django.core.Wsgi import get_wsgi_application
+
+settings.configure(
+    DEBUG=True,
+    ROOT_URLCONF = __name__,
+)
+
+#template
+base_tempalte = template("""
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>{% block title %}Restaurant Website{% endblock %}</title>
+    <title>Restaurant</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin:0;
+            padding:0;
+        }
+        header {
+            background: #333;
+            color:white;
+            padding:1em;
+            text-align:center;
+        }
+        footer {
+            background:#fafafa; 
+            padding:1em;
+            text-algin:center;
+            margin-top:2em;
+        }
+        footer a {
+            margin: 0 10px;
+            text-decoration:none; 
+            color:#333;
+        }
+        footer a:Hover {
+            color:#0077cc;
+        }
+    </style>
 </head>
 <body>
     <header>
-        <nav>
-            <a herf="/">Home</a>|
-            <a herf="/about/">About Us</a>|
-            <a herf="/contact/">Contact</a>
-        </nav>
+        <h1> Welcome to Our Restaurant</h1>
     </header>
 
-    <main>
-        {% block contact %}{% endblock %}
+    <main style="padding:2em; text-align:center;">
+        <h2>Delicious meals crafted with experience</h2>
+        <p>Enjoy the best dining expricence with us.</p>
     </main>
 
-    <footer style="margin-top:20px; padding:10px; background:#f4f4f4; text-align: center;">
-        <p>&copy; {{ now.year }} My Restaurant</p>
-        <p><strong>Opening Hours:</strong><br>
-            Mon - Fir: 9:00Am - 10:00 PM<br>
-            Sat -Sun: 10:00Am - 11:00 Pm
+    <footer>
+        <p>© {{ year }} Our Rstaurant. All right reserved. </p>
+        <p>
+            <a herf="http://facebook.com/placeholder" target="_blank">Facebook</a>|
+            <a herf="http://instagram.com/placeholder" target="_blank">Instagram </a>
         </p>
+        <p>Open Daily: 10:Am - 10pm</p>
     </footer>
 </body>
 </html>
-"""
-
-#child templates
-homme_html = """
-{% extends "base.html" %}
-{% block title %}Home - My Restaurant{% endblock %}
-{% block content %}
-    <h1>Welcome to Our Restaurant</h1>
-    <p>Delicious meals crafting with passion.</p>
-{% endblock %}
-"""
-
-about_html="""
-{% extends "base.html" %}
-{% block title %}About Us - My restaurant{% endblock %}
-{% block contect %}
-    <h1>About Us</h1>
-    <p> We have been serving our community with love and care since 1996.</p>
-{% endblock %}
-"""
-
-contact_html="""
-{% entends ""base.html" %}
-{% block title %}Contact - My restaurant {% endblock %}
-{% block contact %}
-    <h1>Contact Us </h1>
-    <p>Email: contact@myRestaurant.com</p>
-{% endblock %}
-"""
-
-#Django template engine
-django_engine = engine['django']
-template_dict = {
-    "base.html": django_engine.form_string(base_html),
-    "home.html": django_engine.form_string(home_html),
-    "about.html": django_engine.form_string(about_html),
-    "contact.html": django_engine.form_string(contact_html),
-}
-
-def render(template_name, context=None):
-    if context is None:
-        context = {}
-    context["now"] = now()
-    return HttpResponse(template_dict[template_name].render(context))
+""")
 
 #Views
+from datetime import datetime
+
 def home(request):
-    return render(request, "home.html")
-
-def about(request):
-    return(request, "about.html")
-
-def contact(request):
-    return_template("contact.html")
+    html = base_tempalte.render(Context({"year": datetime.now().year}))
+    return HttpResponse("html")
 
 #URL patterns
 urlpatterns = [
     path("", home, name="home"),
-    path("about/", about, name="about"),
-    path("contact/", contact, name="contact"),
 ]
+
+application = get_wsgi_application()
+
+if __name__ == "__main__":
+    from django.core.mangement import execute_from_command_line
+    execute_from_command_line(sys.argv)
