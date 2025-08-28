@@ -9,7 +9,7 @@ def home(request):
     
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en">   
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" contact="width=device-width, inital-scale=1.0">
