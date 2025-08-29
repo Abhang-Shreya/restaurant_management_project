@@ -1,17 +1,31 @@
-from django.http import HttpResponse
+#onefile_app.py
+import sys
+from django.conf import settings
+from django.http import Httpresponse
 from django.urls import path
-from django.shortcuts import render
+from django.core.wsgi import get_wsgi_application
+from django.shorcuts import render
+from djano.template import engines
 
-#Views
-def loction_view(request):
-    return render(request, "location.html")
+#Django setup
+seeting.configure(
+    DEBUG=True,
+    SECRET_KEY="devykey",
+    ROOT_URLCONF=__name__,
+    ALLOWED=["*"],
+    TEMPALTES=[{
+        "BACKEND":"django.template.backends.django.DjangoTemplates",
+        "DIRS":[],
+        "APP_DIRS":False,
+    }],
+)
 
-#URLs
-urlpatterns =[
-    path("location/", location_view, name="location"),
-]
+django_engine = engine['django']
 
-location_tempalte="""
+#View
+def contact(request):
+    contact_email = "contact@yourrestaurant.com"
+    tempalte= django_engine.from_string("""
     <!DOCTYPE html>
     <html>
     <head>
@@ -21,35 +35,41 @@ location_tempalte="""
                 font-family: Arial, sanss-serif;
                 text-align: center;
             }
-            .container {
-                margin: 50px auto;
-                max-width: 800px;
+            .contact-box {
+                padding: 20px;
+                border: 1px solid #ccc;
+                width: 350px;
             }
-            iframe {
-                width: 1000%;
-                hegith: 450px;
-                border: none;
-                border-radius: 10px;
+            a {
+                color: blue;
+                text-decoration: none;
+            }
+            a:hover{
+                text-decoration: underline;
             }
         </style>
     </head>
     <body>
-        <div class="container">
-            <h1>Visit Us</h1>
-            <p><strong> Restaurant Name</strong></p>
-            <p>123 Main Street, Pune, India</p.
-            <p>Phone: +91 9876543210</p>
-
-            <!--Embedded Google Map-->
-            <iframe
-                src="http://www.google.com/maps/embed?pb=!1m181m12!1m13!1d3782.267865482!1d3782.263347218161!2d73.8567!3d18.2520430!2m3!1f0!2f0!3f0!"
-                allowfullscreen="" loading="lazy></iframe>
+        <div class="contact-bix">
+            <h1>Contact Us</h1>
+            <p>
+            <strong>Email:</strong>
+            <a href="mailto:{{ contact_email }}">{{ contact_email }}</a>
+            </p>
         </div>
     </body>
     </html>
-    """
-#Template Loader Hack
-from django.tempalte import engines
-django_engine = engine['django']
-django_engine.engine.form_string(location_tempalte).name = "location.html"
-django_engine.engine.tempalte["location.html"] =django_engine.engine.form_string(loading_template)
+""")
+return Httpresponse(template.render({"contact_email": contact_email}))
+
+#URLs
+uulpatterns = [
+    path("contact/", conatact),
+]
+
+#WSGI
+application = get_wsgi_application()
+
+if __name__ =="__main__":
+    from django.core.management import execute_from_command_line
+    execute_from_command_line(sys.argv)
