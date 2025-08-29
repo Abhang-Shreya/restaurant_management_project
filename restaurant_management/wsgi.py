@@ -1,79 +1,82 @@
-# view.py
-from django.shortcuts import render
-from djanga.http impoet HttpResponse
-from django.db import models
+from django.http import HttpResponse
 from django.urls import path
-from django.apps import AppConfig
+from .view import homepage
 
-#App Config
-class MenuAppConfig(AppConfig):
-    name = "menu_app"
+def homepage(request):
+    html:"""
+    <!DOCTYPE html>
+    <html>
+    <head>
+        <meta cjarset="UTF-8">
+        <tilte>Restaurant Homepage</title>
+        <style>
+            body{
+                font-family: Arial, sanss-serif;
+                margin:0;
+                padding: 0;
+            }
+            header, footer {
+                background: #333;
+                color: white;
+                text-algin: center;
+                padding: 1em;
+            }
+            .restions-section {
+                background:#f9f9f9;
+                padding:2em;
+                text-align:center;
+                margin: 2em auto;
+                border-radius: 10px;
+                width: 80%;
+                box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+            }
+            .reservation-section h2{ 
+                margin-bottom=0.5em;
+            }
+            .reservation-section p {
+                margin-bottom: 1.5em;
+                color: #555;
+            }
+            .resvation-button{
+                background: #e63946;
+                color: white;
+                padding: 0.8em 1.5em;
+                font-size: 1.1em;
+                border:none;
+                border-radius: 6px;
+                text-decoration: none;
+                cursor: pointer;
+            }
+            .reservation-button:hover {
+                background: #d62828;
+            }
+        </style>
+    </head>
+    <body>
+        <header>
+            <h1>Welcome to Our Restaurant</h1>
+        </header>
 
-#Model
-class MenuItem(models.Model):
-    name = models.CharField(maxlength=100)
-    description = models.TextField(black=true, null=True)
-    price = models.DecimalField(max_digits=6, decimal_places=2)
+        <main>
+            <p style="text-align:center;">Delicious meal crafted with care.</p> 
 
-    def __str__(self):
-        return self.address
+            <!--Reservation Section-->
+            <section class="reservation-section>
+                <h2>Reserve Your Table</h2>
+                <p>Plan ahead and secure your dining exprience with us.
+                    Use our reservation system to book a table at your convenience.<p>
+                    <a herf="/reservation/" class="reservation-button">Make a Reservation</a>
+            </section>
+        </main>
 
-#Views
-def menu_page(request):
-    qurey = request.GET.get("q", "")
-    if query:
-        items = MenuItem.objects.filter(name__icontains=qurey)
-    else:
-        items = MenuItem.objects.all()
+        <footer>
+            <p>© 2025 Our Restaurant</p>
+        </footer>
+    </body>
+    </html>
+    """
+    return HttpResponse(html)
 
-    return render(request, "menu.html", {"items": items, "qurey": qurey})
-
-#URLs
-urlspatterns = [
-    path("menu", menu_page, name="menu"),
+urlpatterns = [
+    path("", homepage, name="homepage"),
 ]
-
-#templates
-"""
-<!DOCTYPE html>
-<html>
-<head>
-    <tilte>Menu</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            padding: 20px;
-        }
-        .search-box{
-            margin-bottom:20px;
-        }
-        .menu-item{
-            border: 1px solid #ccc;
-            padding: 10px;
-            margin: 10px 0;
-            border-radius: 5px;
-        }
-    </style>
-</head>
-<body>
-    <h1>Our Menu</h1>
-
-    <from method="get" action="" class="search-box">
-        <input type="text" name="q" placeholder="Secrch menu item..." vlaue={{ qurey }}">
-        <button type ="submit">Search</button>
-    </form>
-
-    {% if items %}
-        {% for item in items %}
-        <div class="menu-item">
-            <h3>{{ item.name }}</h3>
-            <p>{{ item.description }}</p>
-            <p><strong>₹{{ item.price }}</strong></p>
-        </div>
-        {% endfor %}
-    {% else %}
-        <p> No menu items found.</p>
-    {% endif %}
-</body>
-</html>
- """
