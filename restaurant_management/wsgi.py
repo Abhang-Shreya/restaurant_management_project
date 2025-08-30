@@ -1,39 +1,19 @@
-#onefile_app.py
-import sys
-from django.conf import settings
-from django.http import Httpresponse
-from django.urls import path
-from django.core.wsgi import get_wsgi_application
+#views.py
 from django.shorcuts import render
-from djano.template import engines
-
-#Django setup
-seeting.configure(
-    DEBUG=True,
-    SECRET_KEY="devykey",
-    ROOT_URLCONF=__name__,
-    ALLOWED=["*"],
-    TEMPALTES=[{
-        "BACKEND":"django.template.backends.django.DjangoTemplates",
-        "DIRS":[],
-        "APP_DIRS":False,
-    }],
-)
-
-django_engine = engine['django']
 
 #View
-def contact(request):
-    contact_email = "contact@yourrestaurant.com"
-    tempalte= django_engine.from_string("""
+def index(request):
+    return render(request, "home/index.html")
+    ("""
     <!DOCTYPE html>
-    <html>
+    <html lang="en">
     <head>
-        <tilte>Our Location</title>
+        <tilte>Restaurant Homepage</title>
         <style>
             body{
                 font-family: Arial, sanss-serif;
-                text-align: center;
+                margin: 0;
+                padding: 0;
             }
             .contact-box {
                 padding: 20px;
