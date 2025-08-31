@@ -9,7 +9,7 @@ def index(request):
     <html lang="en">
     <head>
         <tilte>Restaurant Homepage</title>
-        <style>
+        <style> 
             body{
                 font-family: Arial, sanss-serif;
                 margin: 0;
