@@ -8,68 +8,83 @@ from .view import index
     <!DOCTYPE html>
     <html lang="en">
     <head>
-    <meta charset="UTF-8">
-        <tilte>Restaurant Website</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, inital-scale=1.0"">
+        <tilte>Homepage with News section</title>
         <style> 
             body{
                 font-family: Arial, sanss-serif;
                 margin: 0;
                 padding: 0;
             }
-            header footer {
+            .news-section {
                 background-color: #333;
-                color: white;
-                padding: 15px;
-                display: flex;
-                justify-contact: space-between;
+                padding: 30px 20px;
                 text-algin: center;
             }
-            .search-bar{
-                display: flex;
+            .news-section h2{
+                font-size: 28px;
+                margin-bottom: 20px;
+                color: #333;
             }
-            .search-bar input[type="text"{
-                padding: 8px;
-                border: none;
-                border-radius: 4px 0 0 4px;
-                outline: none;
+            .news-list{
+                max-width: 700px;
+                margin: 0 auto;
+                text-align: left;
             }
-            .search-bar button{
-                padding: 8px 12px;
-                border: none;
-                background-color: #ff6600;
-                color: white;
-                border-radius: 0 4px 4-x 0;
-                cursor: pointer;
+            .news-item{
+                padding:15px;
+                border-left: 4px solid #ff6600;
+                background-color: #fff;
+                margin-bottom: 15px;
+                border-radius: 6px;
+                border-shadow: 0 2px 6px rgba(0,0,0,0.1);
             }
-            .serch-bar button:hover{
-                background-color: #e65c00;
+            .news-item h3{
+                margin: 0 0 8px;
+                font-size: 18px;
+                color: #222;
+            }
+
+            .new-item p{
+                margin: 0;
+                font-size: 15px;
+                color:# 555;
+            }
+
+            .news-date{
+                font-size: 13px;
+                color: #999;
+                margin-bottom: 6px;
             }
         </style>
     </head>
     <body>
 
-    <!--Header with Search Bar-->
-    <header>
-        <h1>My Restaurant</h1>
-        <form class="serch-bar" action='#' method="get">
-            <input tpye="text" placeholder="Search menu...">
-            <button type="submit">Search</button>
-        </form>
-    </header>
+        <!--News Section -->
+        <section class"news-section">
+            <h2>Latest News & Announcements</h2>
+            <div class="news-list">
 
-    <main style="padding:20px;">
-        <h2>Welcome!</h2>
-        <p>Explore our delicious menu and daily specials.</p>
-    </main>
+                <div class="news-item">
+                    <div class="news-date">September 1, 2025</div>
+                    <h3>New Seasonal Menu Launch</h3>
+                    <p>We are exited to introduce our autum-inspired dishes starting this week. Come and enjoy!</p>
+                </div>
 
-        <!--Footer with Search Bar-->
-        <footer>
-            <p>&copy; 2025 My Resaturant</p>
-            <form class="search-bar" action="#" method="get">
-                <input type="text" placeholder="Search menu...">
-                <button type="submit">Search</button>
-            </form>
-        </footer>
+                <div class="news-item">
+                    <div class="news-date">August 25, 2025</div>
+                    <h3>Live Music Fridays</h3>
+                    <p>Join us every Friday evening for live performances while you dine.</p>
+                </div>
+
+                <divclass="news-item">
+                    <div class="news-date">August 15, 2025</div>
+                    <h3>Independance Day Special</h3>
+                    <p>Celebrite with us and enjoy 20% off on meals for the day</p>
+                </div>
+            </div>
+        </section>
     </body>
     </html>
 """
