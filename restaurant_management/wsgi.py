@@ -4,104 +4,72 @@ from django.http import HttpResponse
 from django.urls import path
 from .view import index
 
-def index(request):
-    special = [
-        {
-            "name": "Spicy Panner Tikka",
-            "description": "Char-grilled paneer cubes marinated in tangy spices",
-            "price":"₹280"
-        },
-        {
-            "name": "Herb Crusted Salmon", 
-            "descrpiton": "Oven-baked salmon with fresh herbs and lemon butter sauce."
-            "price":"₹550"
-        },
-        {
-            "name":"Classic Margheritra Pizza",
-            "descrption":"thin crust with frsh tomato, mozzarella, and basli."
-            "price":"₹350"
-        },
-    ] 
-    
     html = """
     <!DOCTYPE html>
     <html lang="en">
     <head>
-        <tilte>Restaurant Homepage</title>
+    <meta charset="UTF-8">
+        <tilte>Restaurant Website</title>
         <style> 
             body{
                 font-family: Arial, sanss-serif;
                 margin: 0;
                 padding: 0;
             }
-            header{
-                background: #333;
-                color: #fff;
+            header footer {
+                background-color: #333;
+                color: white;
                 padding: 15px;
-                text-algin: center;
-            }
-            .special-section{
-                background: #f9f9f9;
-                padding: 40px 20px;
-        </style>
-    </head>
-                text-algin: center;
-            }
-            .special-section h2{
-                font-size: 28px;
-                margin-bottom: 20px;
-                color: #333;
-            }
-            .special-list{
                 display: flex;
-                justfiy-contact: center;
-                lex-wrap: wrap: wrap;
-                gap: 20px;
+                justify-contact: space-between;
+                text-algin: center;
             }
-            .special-item{
-                background: #fff;
-                border: 1px solid #ddd;
-                border-radius: 12px;
-                padding: 20px;
-                width: 280px;
-                text-algin: left;
-                box-shadow: 0 2px 6px rgba(0,0,0,0.1);
-                transition: transform 0.2s;
+            .search-bar{
+                display: flex;
             }
-            .spical-item:hover{
-                transform: translateY(-5px);
+            .search-bar input[type="text"{
+                padding: 8px;
+                border: none;
+                border-radius: 4px 0 0 4px;
+                outline: none;
             }
-            .special-item h3{
-                margin: 0 0 10px
-                color: #c0392b;
+            .search-bar button{
+                padding: 8px 12px;
+                border: none;
+                background-color: #ff6600;
+                color: white;
+                border-radius: 0 4px 4-x 0;
+                cursor: pointer;
             }
-            .special-item p{
-                margiin: 0 0 8px;
-            }
-            .price {
-                font-weight: bold;
-                color: #27ae60;
+            .serch-bar button:hover{
+                background-color: #e65c00;
             }
         </style>
     </head>
     <body>
+
+    <!--Header with Search Bar-->
     <header>
-        <h1>Welcome to Our Restaurant</h1>
+        <h1>My Restaurant</h1>
+        <form class="serch-bar" action='#' method="get">
+            <input tpye="text" placeholder="Search menu...">
+            <button type="submit">Search</button>
+        </form>
     </header>
 
-        <!--Chef's Daily Special Section-->
-        <section class="specials-section">
-            <h2>Chef's Daily Specials</h2>
-            <div class="specials-list">
-                {% for item in specials %} 
-                <div class="specials-item">
-                    <h3>{{ item.name }}</h3>
-                    <p>{{ item-descrption }}</p>
-                    <p class="price">{{ item.price }}</p>   
-                </div>
-                {% endfor %}
-            </div>
-        </section>
+    <main style="padding:20px;">
+        <h2>Welcome!</h2>
+        <p>Explore our delicious menu and daily specials.</p>
+    </main>
+
+        <!--Footer with Search Bar-->
+        <footer>
+            <p>&copy; 2025 My Resaturant</p>
+            <form class="search-bar" action="#" method="get">
+                <input type="text" placeholder="Search menu...">
+                <button type="submit">Search</button>
+            </form>
+        </footer>
     </body>
     </html>
 """
