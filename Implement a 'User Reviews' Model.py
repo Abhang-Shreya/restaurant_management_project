@@ -25,4 +25,3 @@ class UserReview(models.Model):
 
     def __str__(self):
         return f"Review by {self.user.username} on {self.menu_item.name} ({self.rating}/5)"
-
