@@ -1,0 +1,21 @@
+# account/models.py
+
+from django.db import models
+from django.conf import settings
+from django.contrib import admin
+
+# Extend User model with CustomerProfile
+class CustomerProfile(models.Model):
+    user = models.OneToOneField(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name='customer_profile')
+    phone_number = models.CharField(max_length=15)
+    delivery_address = models.TextField()
+
+    def __str__(self):
+        return f"{self.user.username} - {self.phone_number}"
+
+
+# Register CustomerProfile in Django Admin
+@admin.register(CustomerProfile)
+class CustomerProfileAdmin(admin.ModelAdmin):
+    list_display = ('user', 'phone_number', 'delivery_address')
+    search_fields = ('user__username', 'phone_number')
